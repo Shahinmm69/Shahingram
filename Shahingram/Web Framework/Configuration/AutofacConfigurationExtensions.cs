@@ -18,6 +18,7 @@ namespace WebFramework.Configuration
         {
             //RegisterType > As > Liftetime
             containerBuilder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerLifetimeScope();
+            containerBuilder.RegisterGeneric(typeof(CreationRepository<>)).As(typeof(ICreationRepository<>)).InstancePerLifetimeScope();
         }
 
         public static IServiceProvider BuildAutofacServiceProvider(this IServiceCollection services)

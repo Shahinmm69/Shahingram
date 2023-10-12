@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Entities.Models
 {
-    public class Category : BaseEntity
+    public class Category : Modification
     {
         [Required]
         [StringLength(100)]
         public string Title { get; set; }
 
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<User>? Users { get; set; }
     }
 }

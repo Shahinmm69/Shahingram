@@ -9,12 +9,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Models
 {
-    public class Country : BaseEntity
+    public class Country : Modification
     {
         [Required]
         [StringLength(100)]
         public string Title { get; set; }
 
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<User>? Users { get; set; }
     }
 }

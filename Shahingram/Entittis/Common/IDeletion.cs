@@ -8,8 +8,8 @@ namespace Entities.Common
 {
     public interface IDeletion
     {
-        public bool IsDeleted { get; set; }
-        public DateTime DeletionDate { get; set; }
-        public int UserDeletionId { get; set; }
+        public bool? IsDeleted { get; set; }
+        public DateTime? DeletionDate { get; set; }
+        public int? UserDeletionId { get; set; }
     }
 }

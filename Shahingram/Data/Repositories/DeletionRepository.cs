@@ -17,7 +17,7 @@ namespace Data.Repositories
         {
             DbContext = dbContext;
         }
-        public Task DeletionDateAsync(TEntity entity, CancellationToken cancellationToken)
+        public virtual Task DeletionDateAsync(TEntity entity, CancellationToken cancellationToken)
         {
             entity.DeletionDate = DateTime.Now;
             entity.IsDeleted = true;

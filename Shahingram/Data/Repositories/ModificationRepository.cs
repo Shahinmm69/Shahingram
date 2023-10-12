@@ -17,13 +17,13 @@ namespace Data.Repositories
         {
             DbContext = dbContext;
         }
-        public Task CraetionDateAsync(TEntity entity, CancellationToken cancellationToken)
+        public virtual Task CraetionDateAsync(TEntity entity, CancellationToken cancellationToken)
         {
             entity.CrationDate = DateTime.Now;
             return AddAsync(entity, cancellationToken);
 
         }
-        public Task UpdatModificationDateAsync(TEntity entity, CancellationToken cancellationToken)
+        public virtual Task UpdatModificationDateAsync(TEntity entity, CancellationToken cancellationToken)
         {
             entity.ModificationDate = DateTime.Now;
             return UpdateAsync(entity, cancellationToken);

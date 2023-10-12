@@ -11,19 +11,19 @@ namespace Entities.Models
         [Required]
         public string Text { get; set; }
 
-        public bool IsDeleted { get; set; }
-        public DateTime DeletionDate { get; set; }
-        public int UserDeletionId { get; set; }
+        public bool? IsDeleted { get; set; }
+        public DateTime? DeletionDate { get; set; }
+        public int? UserDeletionId { get; set; }
 
         public int UserId { get; set; }
         public int PostId { get; set; }
-        public int ReplyId { get; set; }
+        public int? ReplyId { get; set; }
 
         public virtual User User { get; set; } = null!;
         public virtual Post Post { get; set; } = null!;
-        public virtual Comment Reply { get; set; } = null!;
-        public virtual ICollection<CommentHashtag> CommentHashtags { get; set; }
-        public virtual ICollection<Comment> Children { get; set; }
+        public virtual Comment? Reply { get; set; } = null!;
+        public virtual ICollection<CommentHashtag>? CommentHashtags { get; set; }
+        public virtual ICollection<Comment>? Children { get; set; }
 
         public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         {

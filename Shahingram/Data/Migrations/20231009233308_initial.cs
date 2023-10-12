@@ -17,7 +17,11 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCraetionId = table.Column<int>(type: "int", nullable: false),
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserModificationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -30,7 +34,11 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCraetionId = table.Column<int>(type: "int", nullable: false),
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserModificationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -43,14 +51,12 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserDeletionId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserDeletionId = table.Column<int>(type: "int", nullable: true),
                     CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserCraetionId = table.Column<int>(type: "int", nullable: false),
-                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserModificationId = table.Column<int>(type: "int", nullable: false)
+                    UserCraetionId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,9 +71,9 @@ namespace Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Describtion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserDeletionId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserDeletionId = table.Column<int>(type: "int", nullable: true),
                     CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserCraetionId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -84,9 +90,9 @@ namespace Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Describtion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserDeletionId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserDeletionId = table.Column<int>(type: "int", nullable: true),
                     CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserCraetionId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -109,17 +115,17 @@ namespace Data.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Biography = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserDeletionId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserDeletionId = table.Column<int>(type: "int", nullable: true),
                     BirthCountryId = table.Column<int>(type: "int", nullable: false),
                     LifeCountryId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false),
                     CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserCraetionId = table.Column<int>(type: "int", nullable: false),
-                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserModificationId = table.Column<int>(type: "int", nullable: false)
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserModificationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -144,9 +150,9 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserDeletionId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserDeletionId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     FollowId = table.Column<int>(type: "int", nullable: false),
                     CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -169,15 +175,15 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserDeletionId = table.Column<int>(type: "int", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserDeletionId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserCraetionId = table.Column<int>(type: "int", nullable: false),
-                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserModificationId = table.Column<int>(type: "int", nullable: false)
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserModificationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -223,16 +229,16 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserDeletionId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserDeletionId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: false),
-                    ReplyId = table.Column<int>(type: "int", nullable: false),
+                    ReplyId = table.Column<int>(type: "int", nullable: true),
                     CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserCraetionId = table.Column<int>(type: "int", nullable: false),
-                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserModificationId = table.Column<int>(type: "int", nullable: false)
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserModificationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -241,8 +247,7 @@ namespace Data.Migrations
                         name: "FK_Comments_Comments_ReplyId",
                         column: x => x.ReplyId,
                         principalTable: "Comments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Comments_Posts_PostId",
                         column: x => x.PostId,
@@ -263,20 +268,20 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SenderIsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     ReceiverIsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserDeletionId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserDeletionId = table.Column<int>(type: "int", nullable: true),
                     UserSenderId = table.Column<int>(type: "int", nullable: false),
                     UserReceiverId = table.Column<int>(type: "int", nullable: false),
-                    PostId = table.Column<int>(type: "int", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserCraetionId = table.Column<int>(type: "int", nullable: false),
-                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserModificationId = table.Column<int>(type: "int", nullable: false)
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserModificationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -285,8 +290,7 @@ namespace Data.Migrations
                         name: "FK_Directs_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Directs_Users_UserId",
                         column: x => x.UserId,
@@ -301,9 +305,9 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserDeletionId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserDeletionId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: false),
                     CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),

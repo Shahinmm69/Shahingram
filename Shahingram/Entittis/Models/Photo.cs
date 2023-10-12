@@ -13,11 +13,11 @@ namespace Entities.Models
     {
         [Required]
         public string Address { get; set; }
-
+        [Required]
         public string Describtion { get; set; }
-        public bool IsDeleted { get; set; }
-        public DateTime DeletionDate { get; set; }
-        public int UserDeletionId { get; set; }
+        public bool? IsDeleted { get; set; }
+        public DateTime? DeletionDate { get; set; }
+        public int? UserDeletionId { get; set; }
 
         public virtual ICollection<UserPhoto> UserPhotos { get; set; }
         public virtual ICollection<PostPhoto> PostPhotos { get; set; }

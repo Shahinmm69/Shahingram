@@ -18,9 +18,9 @@ namespace Entities.Models
         public string Biography { get; set; }
         public string PasswordHash { get; set; }
 
-        public bool IsDeleted { get; set; }
-        public DateTime DeletionDate { get; set; }
-        public int UserDeletionId { get; set; }
+        public bool? IsDeleted { get; set; }
+        public DateTime? DeletionDate { get; set; }
+        public int? UserDeletionId { get; set; }
 
         public int BirthCountryId { get; set; }
         public int LifeCountryId { get; set; }
@@ -28,12 +28,12 @@ namespace Entities.Models
 
         public virtual Country Country { get; set; } = null!;
         public virtual Category Category { get; set; } = null!;
-        public virtual ICollection<UserPhoto> UserPhotos { get; set; }
-        public virtual ICollection<Follow> Follows { get; set; }
-        public virtual ICollection<Like> Likes { get; set; }
-        public virtual ICollection<Post> Posts { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Direct> Directs { get; set; }
+        public virtual ICollection<UserPhoto>? UserPhotos { get; set; }
+        public virtual ICollection<Follow>? Follows { get; set; }
+        public virtual ICollection<Like>? Likes { get; set; }
+        public virtual ICollection<Post>? Posts { get; set; }
+        public virtual ICollection<Comment>? Comments { get; set; }
+        public virtual ICollection<Direct>? Directs { get; set; }
 
         public class UserConfiguration : IEntityTypeConfiguration<User>
         {

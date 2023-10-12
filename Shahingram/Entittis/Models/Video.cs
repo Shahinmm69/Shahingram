@@ -7,11 +7,11 @@ namespace Entities.Models
     {
         [Required]
         public string Address { get; set; }
-
+        [Required]
         public string Describtion { get; set; }
-        public bool IsDeleted { get; set; }
-        public DateTime DeletionDate { get; set; }
-        public int UserDeletionId { get; set; }
+        public bool? IsDeleted { get; set; }
+        public DateTime? DeletionDate { get; set; }
+        public int? UserDeletionId { get; set; }
 
         public virtual ICollection<PostVideo> PostVideos { get; set; }
         public virtual ICollection<DirectVideo> DirectVideos { get; set; }

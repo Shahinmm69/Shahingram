@@ -4,14 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Models
 {
-    public class Hashtag : Modification, IDeletion
+    public class Hashtag : Craetion, IDeletion
     {
         [Required]
-        public string Address { get; set; }
+        public string Title { get; set; }
 
-        public bool IsDeleted { get; set; }
-        public DateTime DeletionDate { get; set; }
-        public int UserDeletionId { get; set; }
+        public bool? IsDeleted { get; set; }
+        public DateTime? DeletionDate { get; set; }
+        public int? UserDeletionId { get; set; }
 
         public virtual ICollection<PostHashtag> PostHashtags { get; set; }
         public virtual ICollection<CommentHashtag> CommentHashtags { get; set; }

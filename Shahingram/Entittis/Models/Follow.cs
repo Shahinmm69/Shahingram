@@ -7,9 +7,9 @@ namespace Entities.Models
 {
     public class Follow : Craetion, IDeletion
     {
-        public bool IsDeleted { get; set; }
-        public DateTime DeletionDate { get; set; }
-        public int UserDeletionId { get; set; }
+        public bool? IsDeleted { get; set; }
+        public DateTime? DeletionDate { get; set; }
+        public int? UserDeletionId { get; set; }
 
         public int UserId { get; set; }
         public int FollowId { get; set; }

@@ -8,7 +8,7 @@ namespace Entities.Common
 {
     public abstract class Modification : Craetion
     {
-        public DateTime ModificationDate { get; set; }
-        public int UserModificationId { get; set; }
+        public DateTime? ModificationDate { get; set; }
+        public int? UserModificationId { get; set; }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230922152736_initial")]
+    [Migration("20231009233308_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -25,25 +25,7 @@ namespace Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Entittis.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("Entittis.Comment", b =>
+            modelBuilder.Entity("Entities.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,19 +36,49 @@ namespace Data.Migrations
                     b.Property<DateTime>("CrationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletionDate")
+                    b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("UserCraetionId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserModificationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Entities.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CrationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("ModificationDate")
+                    b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReplyId")
+                    b.Property<int?>("ReplyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
@@ -76,13 +88,13 @@ namespace Data.Migrations
                     b.Property<int>("UserCraetionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserDeletionId")
+                    b.Property<int?>("UserDeletionId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserModificationId")
+                    b.Property<int?>("UserModificationId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -96,7 +108,7 @@ namespace Data.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("Entittis.CommentHashtag", b =>
+            modelBuilder.Entity("Entities.Models.CommentHashtag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -119,25 +131,7 @@ namespace Data.Migrations
                     b.ToTable("CommentHashtags");
                 });
 
-            modelBuilder.Entity("Entittis.Country", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Countries");
-                });
-
-            modelBuilder.Entity("Entittis.Direct", b =>
+            modelBuilder.Entity("Entities.Models.Country", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -148,16 +142,46 @@ namespace Data.Migrations
                     b.Property<DateTime>("CrationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletionDate")
+                    b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("UserCraetionId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserModificationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Countries");
+                });
+
+            modelBuilder.Entity("Entities.Models.Direct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CrationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("ModificationDate")
+                    b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PostId")
+                    b.Property<int?>("PostId")
                         .HasColumnType("int");
 
                     b.Property<bool>("ReceiverIsDeleted")
@@ -167,19 +191,18 @@ namespace Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Text")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserCraetionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserDeletionId")
+                    b.Property<int?>("UserDeletionId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserModificationId")
+                    b.Property<int?>("UserModificationId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserReceiverId")
@@ -197,7 +220,7 @@ namespace Data.Migrations
                     b.ToTable("Directs");
                 });
 
-            modelBuilder.Entity("Entittis.DirectPhoto", b =>
+            modelBuilder.Entity("Entities.Models.DirectPhoto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -220,7 +243,7 @@ namespace Data.Migrations
                     b.ToTable("DirectPhotos");
                 });
 
-            modelBuilder.Entity("Entittis.DirectVideo", b =>
+            modelBuilder.Entity("Entities.Models.DirectVideo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -243,7 +266,7 @@ namespace Data.Migrations
                     b.ToTable("DirectVideos");
                 });
 
-            modelBuilder.Entity("Entittis.Follow", b =>
+            modelBuilder.Entity("Entities.Models.Follow", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -254,19 +277,19 @@ namespace Data.Migrations
                     b.Property<DateTime>("CrationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletionDate")
+                    b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("FollowId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<int>("UserCraetionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserDeletionId")
+                    b.Property<int?>("UserDeletionId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -279,7 +302,7 @@ namespace Data.Migrations
                     b.ToTable("Follows");
                 });
 
-            modelBuilder.Entity("Entittis.Hashtag", b =>
+            modelBuilder.Entity("Entities.Models.Hashtag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -287,29 +310,23 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CrationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletionDate")
+                    b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("ModificationDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserCraetionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserDeletionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserModificationId")
+                    b.Property<int?>("UserDeletionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -317,7 +334,7 @@ namespace Data.Migrations
                     b.ToTable("Hashtags");
                 });
 
-            modelBuilder.Entity("Entittis.Like", b =>
+            modelBuilder.Entity("Entities.Models.Like", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -328,10 +345,10 @@ namespace Data.Migrations
                     b.Property<DateTime>("CrationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletionDate")
+                    b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<int>("PostId")
@@ -340,7 +357,7 @@ namespace Data.Migrations
                     b.Property<int>("UserCraetionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserDeletionId")
+                    b.Property<int?>("UserDeletionId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -355,7 +372,7 @@ namespace Data.Migrations
                     b.ToTable("Likes");
                 });
 
-            modelBuilder.Entity("Entittis.Photo", b =>
+            modelBuilder.Entity("Entities.Models.Photo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -370,20 +387,20 @@ namespace Data.Migrations
                     b.Property<DateTime>("CrationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletionDate")
+                    b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Describtion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<int>("UserCraetionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserDeletionId")
+                    b.Property<int?>("UserDeletionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -391,7 +408,7 @@ namespace Data.Migrations
                     b.ToTable("Photos");
                 });
 
-            modelBuilder.Entity("Entittis.Post", b =>
+            modelBuilder.Entity("Entities.Models.Post", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -402,29 +419,28 @@ namespace Data.Migrations
                     b.Property<DateTime>("CrationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletionDate")
+                    b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("ModificationDate")
+                    b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Text")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserCraetionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserDeletionId")
+                    b.Property<int?>("UserDeletionId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserModificationId")
+                    b.Property<int?>("UserModificationId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -434,7 +450,7 @@ namespace Data.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("Entittis.PostHashtag", b =>
+            modelBuilder.Entity("Entities.Models.PostHashtag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -457,7 +473,7 @@ namespace Data.Migrations
                     b.ToTable("PostHashtags");
                 });
 
-            modelBuilder.Entity("Entittis.PostPhoto", b =>
+            modelBuilder.Entity("Entities.Models.PostPhoto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -480,7 +496,7 @@ namespace Data.Migrations
                     b.ToTable("PostPhotos");
                 });
 
-            modelBuilder.Entity("Entittis.PostVideo", b =>
+            modelBuilder.Entity("Entities.Models.PostVideo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -503,7 +519,7 @@ namespace Data.Migrations
                     b.ToTable("PostVideos");
                 });
 
-            modelBuilder.Entity("Entittis.User", b =>
+            modelBuilder.Entity("Entities.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -527,7 +543,7 @@ namespace Data.Migrations
                     b.Property<DateTime>("CrationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletionDate")
+                    b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -538,7 +554,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -556,7 +572,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ModificationDate")
+                    b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PasswordHash")
@@ -566,10 +582,10 @@ namespace Data.Migrations
                     b.Property<int>("UserCraetionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserDeletionId")
+                    b.Property<int?>("UserDeletionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserModificationId")
+                    b.Property<int?>("UserModificationId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
@@ -585,7 +601,7 @@ namespace Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Entittis.UserPhoto", b =>
+            modelBuilder.Entity("Entities.Models.UserPhoto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -608,7 +624,7 @@ namespace Data.Migrations
                     b.ToTable("UserPhotos");
                 });
 
-            modelBuilder.Entity("Entittis.Video", b =>
+            modelBuilder.Entity("Entities.Models.Video", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -623,20 +639,20 @@ namespace Data.Migrations
                     b.Property<DateTime>("CrationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletionDate")
+                    b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Describtion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<int>("UserCraetionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserDeletionId")
+                    b.Property<int?>("UserDeletionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -644,21 +660,19 @@ namespace Data.Migrations
                     b.ToTable("Videos");
                 });
 
-            modelBuilder.Entity("Entittis.Comment", b =>
+            modelBuilder.Entity("Entities.Models.Comment", b =>
                 {
-                    b.HasOne("Entittis.Post", "Post")
+                    b.HasOne("Entities.Models.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entittis.Comment", "Reply")
+                    b.HasOne("Entities.Models.Comment", "Reply")
                         .WithMany("Children")
-                        .HasForeignKey("ReplyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("ReplyId");
 
-                    b.HasOne("Entittis.User", "User")
+                    b.HasOne("Entities.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -671,15 +685,15 @@ namespace Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Entittis.CommentHashtag", b =>
+            modelBuilder.Entity("Entities.Models.CommentHashtag", b =>
                 {
-                    b.HasOne("Entittis.Comment", "Comment")
+                    b.HasOne("Entities.Models.Comment", "Comment")
                         .WithMany("CommentHashtags")
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entittis.Hashtag", "Hashtag")
+                    b.HasOne("Entities.Models.Hashtag", "Hashtag")
                         .WithMany("CommentHashtags")
                         .HasForeignKey("HashtagId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -690,15 +704,13 @@ namespace Data.Migrations
                     b.Navigation("Hashtag");
                 });
 
-            modelBuilder.Entity("Entittis.Direct", b =>
+            modelBuilder.Entity("Entities.Models.Direct", b =>
                 {
-                    b.HasOne("Entittis.Post", "Post")
+                    b.HasOne("Entities.Models.Post", "Post")
                         .WithMany("Directs")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("PostId");
 
-                    b.HasOne("Entittis.User", "User")
+                    b.HasOne("Entities.Models.User", "User")
                         .WithMany("Directs")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -709,15 +721,15 @@ namespace Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Entittis.DirectPhoto", b =>
+            modelBuilder.Entity("Entities.Models.DirectPhoto", b =>
                 {
-                    b.HasOne("Entittis.Direct", "Direct")
+                    b.HasOne("Entities.Models.Direct", "Direct")
                         .WithMany("DirectPhotos")
                         .HasForeignKey("DirectId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entittis.Photo", "Photo")
+                    b.HasOne("Entities.Models.Photo", "Photo")
                         .WithMany("DirectPhotos")
                         .HasForeignKey("PhotoId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -728,15 +740,15 @@ namespace Data.Migrations
                     b.Navigation("Photo");
                 });
 
-            modelBuilder.Entity("Entittis.DirectVideo", b =>
+            modelBuilder.Entity("Entities.Models.DirectVideo", b =>
                 {
-                    b.HasOne("Entittis.Direct", "Direct")
+                    b.HasOne("Entities.Models.Direct", "Direct")
                         .WithMany("DirectVideos")
                         .HasForeignKey("DirectId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entittis.Video", "Video")
+                    b.HasOne("Entities.Models.Video", "Video")
                         .WithMany("DirectVideos")
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -747,9 +759,9 @@ namespace Data.Migrations
                     b.Navigation("Video");
                 });
 
-            modelBuilder.Entity("Entittis.Follow", b =>
+            modelBuilder.Entity("Entities.Models.Follow", b =>
                 {
-                    b.HasOne("Entittis.User", "User")
+                    b.HasOne("Entities.Models.User", "User")
                         .WithMany("Follows")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -758,15 +770,15 @@ namespace Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Entittis.Like", b =>
+            modelBuilder.Entity("Entities.Models.Like", b =>
                 {
-                    b.HasOne("Entittis.Post", "Post")
+                    b.HasOne("Entities.Models.Post", "Post")
                         .WithMany("Likes")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entittis.User", "User")
+                    b.HasOne("Entities.Models.User", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -777,9 +789,9 @@ namespace Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Entittis.Post", b =>
+            modelBuilder.Entity("Entities.Models.Post", b =>
                 {
-                    b.HasOne("Entittis.User", "User")
+                    b.HasOne("Entities.Models.User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -788,15 +800,15 @@ namespace Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Entittis.PostHashtag", b =>
+            modelBuilder.Entity("Entities.Models.PostHashtag", b =>
                 {
-                    b.HasOne("Entittis.Hashtag", "Hashtag")
+                    b.HasOne("Entities.Models.Hashtag", "Hashtag")
                         .WithMany("PostHashtags")
                         .HasForeignKey("HashtagId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entittis.Post", "Post")
+                    b.HasOne("Entities.Models.Post", "Post")
                         .WithMany("PostHashtags")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -807,15 +819,15 @@ namespace Data.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("Entittis.PostPhoto", b =>
+            modelBuilder.Entity("Entities.Models.PostPhoto", b =>
                 {
-                    b.HasOne("Entittis.Photo", "Photo")
+                    b.HasOne("Entities.Models.Photo", "Photo")
                         .WithMany("PostPhotos")
                         .HasForeignKey("PhotoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entittis.Post", "Post")
+                    b.HasOne("Entities.Models.Post", "Post")
                         .WithMany("PostPhotos")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -826,15 +838,15 @@ namespace Data.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("Entittis.PostVideo", b =>
+            modelBuilder.Entity("Entities.Models.PostVideo", b =>
                 {
-                    b.HasOne("Entittis.Post", "Post")
+                    b.HasOne("Entities.Models.Post", "Post")
                         .WithMany("PostVideos")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entittis.Video", "Video")
+                    b.HasOne("Entities.Models.Video", "Video")
                         .WithMany("PostVideos")
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -845,15 +857,15 @@ namespace Data.Migrations
                     b.Navigation("Video");
                 });
 
-            modelBuilder.Entity("Entittis.User", b =>
+            modelBuilder.Entity("Entities.Models.User", b =>
                 {
-                    b.HasOne("Entittis.Category", "Category")
+                    b.HasOne("Entities.Models.Category", "Category")
                         .WithMany("Users")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entittis.Country", "Country")
+                    b.HasOne("Entities.Models.Country", "Country")
                         .WithMany("Users")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -864,15 +876,15 @@ namespace Data.Migrations
                     b.Navigation("Country");
                 });
 
-            modelBuilder.Entity("Entittis.UserPhoto", b =>
+            modelBuilder.Entity("Entities.Models.UserPhoto", b =>
                 {
-                    b.HasOne("Entittis.Photo", "Photo")
+                    b.HasOne("Entities.Models.Photo", "Photo")
                         .WithMany("UserPhotos")
                         .HasForeignKey("PhotoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entittis.User", "User")
+                    b.HasOne("Entities.Models.User", "User")
                         .WithMany("UserPhotos")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -883,38 +895,38 @@ namespace Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Entittis.Category", b =>
+            modelBuilder.Entity("Entities.Models.Category", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("Entittis.Comment", b =>
+            modelBuilder.Entity("Entities.Models.Comment", b =>
                 {
                     b.Navigation("Children");
 
                     b.Navigation("CommentHashtags");
                 });
 
-            modelBuilder.Entity("Entittis.Country", b =>
+            modelBuilder.Entity("Entities.Models.Country", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("Entittis.Direct", b =>
+            modelBuilder.Entity("Entities.Models.Direct", b =>
                 {
                     b.Navigation("DirectPhotos");
 
                     b.Navigation("DirectVideos");
                 });
 
-            modelBuilder.Entity("Entittis.Hashtag", b =>
+            modelBuilder.Entity("Entities.Models.Hashtag", b =>
                 {
                     b.Navigation("CommentHashtags");
 
                     b.Navigation("PostHashtags");
                 });
 
-            modelBuilder.Entity("Entittis.Photo", b =>
+            modelBuilder.Entity("Entities.Models.Photo", b =>
                 {
                     b.Navigation("DirectPhotos");
 
@@ -923,7 +935,7 @@ namespace Data.Migrations
                     b.Navigation("UserPhotos");
                 });
 
-            modelBuilder.Entity("Entittis.Post", b =>
+            modelBuilder.Entity("Entities.Models.Post", b =>
                 {
                     b.Navigation("Comments");
 
@@ -938,7 +950,7 @@ namespace Data.Migrations
                     b.Navigation("PostVideos");
                 });
 
-            modelBuilder.Entity("Entittis.User", b =>
+            modelBuilder.Entity("Entities.Models.User", b =>
                 {
                     b.Navigation("Comments");
 
@@ -953,7 +965,7 @@ namespace Data.Migrations
                     b.Navigation("UserPhotos");
                 });
 
-            modelBuilder.Entity("Entittis.Video", b =>
+            modelBuilder.Entity("Entities.Models.Video", b =>
                 {
                     b.Navigation("DirectVideos");
 

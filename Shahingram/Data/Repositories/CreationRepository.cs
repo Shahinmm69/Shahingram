@@ -17,7 +17,7 @@ namespace Data.Repositories
         {
             DbContext = dbContext;
         }
-        public Task CraetionDateAsync(TEntity entity, CancellationToken cancellationToken)
+        public virtual Task CraetionDateAsync(TEntity entity, CancellationToken cancellationToken)
         {
             entity.CrationDate = DateTime.Now;
             return AddAsync(entity, cancellationToken);
