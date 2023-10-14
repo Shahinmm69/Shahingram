@@ -25,11 +25,11 @@ namespace Services.Services
         {
             var like = await likerepository.TableNoTracking.Where(x => x.UserId == entity.UserId && x.PostId == entity.PostId).LastAsync();
 
-            if (like == null)
+            if (like == null || like.IsDeleted == true)
             {
                 await creationlikerepository.CraetionDateAsync(entity, cancellationToken);
             }
-            else if (like.IsDeleted != true)
+            else
             {
                 throw new BadRequestException("شما قبلا این پست را لایک کردید");
             }

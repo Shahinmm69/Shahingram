@@ -14,6 +14,7 @@ namespace Services.Services
         protected readonly IRepository<Video> videorepository;
         protected readonly IRepository<Hashtag> hashtagrepository;
         protected readonly IRepository<Like> likerepository;
+        protected readonly IRepository<Comment> commentrepository;
         protected readonly IRepository<Post> postepository;
         protected readonly IDeletionRepository<Photo> deletephotorepository;
         protected readonly IDeletionRepository<Video> deletevideorepository;
@@ -25,7 +26,7 @@ namespace Services.Services
             , IRepository<PostHashtag> posthashtagrepository, IRepository<Photo> photorepository, IRepository<Video> videorepository, IRepository<Hashtag> hashtagrepository
             , IRepository<Like> likerepository, IRepository<Post> postepository, IDeletionRepository<Photo> deletephotorepository, IDeletionRepository<Video> deletevideorepository
             , ICreationRepository<Photo> creationphotorepository, ICreationRepository<Video> creationvideorepository, ICreationRepository<Direct> creationdirectorepository
-            , ICreationRepository<Hashtag> creationhashtagrepository)
+            , ICreationRepository<Hashtag> creationhashtagrepository, IRepository<Comment> commentrepository)
         {
             this.postphotorepository = postphotorepository;
             this.postvideorepository = postvideorepository;
@@ -41,19 +42,22 @@ namespace Services.Services
             this.creationvideorepository = creationvideorepository;
             this.creationdirectorepository = creationdirectorepository;
             this.creationhashtagrepository = creationhashtagrepository;
+            this.commentrepository = commentrepository;
         }
 
-        public async Task NewPhotoHandlerAsync(string address, int id, int userid, CancellationToken cancellationToken)
+        public async Task NewPhotoHandlerAsync(string address, int id, CancellationToken cancellationToken)
         {
-            var newphoto = new Photo() { Address = address, UserCraetionId = userid, Describtion = await GetDescribtionAsync(id, cancellationToken) };
+            var post = await postepository.GetByIdAsync(cancellationToken, id);
+            var newphoto = new Photo() { Address = address, UserCraetionId = post.UserId, Describtion = await GetDescribtionAsync(id, cancellationToken) };
             await creationphotorepository.CraetionDateAsync(newphoto, cancellationToken);
             var newpostphoto = new PostPhoto() { PostId = id, PhotoId = newphoto.Id };
             await postphotorepository.AddAsync(newpostphoto, cancellationToken);
         }
 
-        public async Task NewVideoHandlerAsync(string address, int id, int userid, CancellationToken cancellationToken)
+        public async Task NewVideoHandlerAsync(string address, int id, CancellationToken cancellationToken)
         {
-            var newvideo = new Video() { Address = address, UserCraetionId = userid, Describtion = await GetDescribtionAsync(id, cancellationToken) };
+            var post = await postepository.GetByIdAsync(cancellationToken, id);
+            var newvideo = new Video() { Address = address, UserCraetionId = post.UserId, Describtion = await GetDescribtionAsync(id, cancellationToken) };
             await creationvideorepository.CraetionDateAsync(newvideo, cancellationToken);
             var newpostvideo = new PostVideo() { PostId = id, VideoId = newvideo.Id };
             await postvideorepository.AddAsync(newpostvideo, cancellationToken);
@@ -61,8 +65,8 @@ namespace Services.Services
 
         public async Task<Photo> GetPhotoAsync(int id, CancellationToken cancellationToken)
         {
-            var posttphoto = await postphotorepository.TableNoTracking.Where(x => x.PostId == id).SingleAsync();
-            var photo = posttphoto.Photo;
+            var postphoto = await postphotorepository.TableNoTracking.Where(x => x.PostId == id).SingleAsync();
+            var photo = postphoto.Photo;
             var post = await postepository.GetByIdAsync(cancellationToken, id);
 
             if (photo is not null)
@@ -108,6 +112,14 @@ namespace Services.Services
             var likes = await likerepository.TableNoTracking.Where(x => x.PostId == id && x.IsDeleted == false).ToListAsync();
             foreach (var like in likes)
                 yield return await likerepository.GetByIdAsync(cancellationToken, like.Id);
+        }
+
+
+        public async IAsyncEnumerable<Comment>? GetComment(int id, CancellationToken cancellationToken)
+        {
+            var comments = await commentrepository.TableNoTracking.Where(x => x.PostId == id && x.IsDeleted == false).ToListAsync();
+            foreach (var comment in comments)
+                yield return await commentrepository.GetByIdAsync(cancellationToken, comment.Id);
         }
 
         public async Task HashtagsHandler(int id, CancellationToken cancellationToken)
@@ -164,7 +176,8 @@ namespace Services.Services
                     return result as Video;
                 }
             }
-            return null;
+            //one image that's show "This item is not exist!"
+            return await photorepository.TableNoTracking.Where(x => x.Id == 1).SingleAsync() as Photo;
         }
 
         public async Task ForwardAsync(int id, int userreceiverid, CancellationToken cancellationToken)
