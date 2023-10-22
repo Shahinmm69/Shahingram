@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Services.Contract;
+using Common;
 
 namespace Services.Services
 {
-    public class DirectServices : IDirectServices
+    public class DirectServices : IDirectServices, IScopedDependency
     {
         protected readonly IRepository<DirectPhoto> directphotorepository;
         protected readonly IRepository<DirectVideo> directvideorepository;

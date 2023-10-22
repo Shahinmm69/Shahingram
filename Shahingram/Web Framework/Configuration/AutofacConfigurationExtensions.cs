@@ -4,8 +4,10 @@ using Common;
 using Data;
 using Data.Contract;
 using Data.Repositories;
+using Entities.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Services;
+using Services.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,7 +20,26 @@ namespace WebFramework.Configuration
         {
             //RegisterType > As > Liftetime
             containerBuilder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerLifetimeScope();
-            containerBuilder.RegisterGeneric(typeof(CreationRepository<>)).As(typeof(ICreationRepository<>)).InstancePerLifetimeScope();
+
+            var commonAssembly = typeof(SiteSettings).Assembly;
+            var entitiesAssembly = typeof(IEntity).Assembly;
+            var dataAssembly = typeof(ApplicationDbContext).Assembly;
+            var servicesAssembly = typeof(JwtService).Assembly;
+
+            containerBuilder.RegisterAssemblyTypes(commonAssembly, entitiesAssembly, dataAssembly, servicesAssembly)
+                .AssignableTo<IScopedDependency>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterAssemblyTypes(commonAssembly, entitiesAssembly, dataAssembly, servicesAssembly)
+                .AssignableTo<ITransientDependency>()
+                .AsImplementedInterfaces()
+                .InstancePerDependency();
+
+            containerBuilder.RegisterAssemblyTypes(commonAssembly, entitiesAssembly, dataAssembly, servicesAssembly)
+                .AssignableTo<ISingletonDependency>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
         }
 
         public static IServiceProvider BuildAutofacServiceProvider(this IServiceCollection services)

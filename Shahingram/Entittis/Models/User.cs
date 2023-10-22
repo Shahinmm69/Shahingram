@@ -1,5 +1,6 @@
 ﻿using Entities.Common;
 using Entities.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Numerics;
@@ -7,16 +8,18 @@ using System.Reflection;
 
 namespace Entities.Models
 {
-    public class User : Modification, IDeletion
+    public class User : IdentityUser<int>, IDeletion, IEntity
     {
         public string FirstName { get; set; }
-        public string MiddleName { get; set; }
+        public string? MiddleName { get; set; }
         public string LastName { get; set; }
-        public string UserName { get; set; }
-        public string Mobile { get; set; }
-        public string Email { get; set; }
         public string Biography { get; set; }
-        public string PasswordHash { get; set; }
+
+        public DateTime CrationDate { get; set; }
+        public int UserCraetionId { get; set; }
+
+        public DateTime? ModificationDate { get; set; }
+        public int? UserModificationId { get; set; }
 
         public bool? IsDeleted { get; set; }
         public DateTime? DeletionDate { get; set; }
@@ -43,7 +46,7 @@ namespace Entities.Models
                 builder.Property(p => p.MiddleName).HasMaxLength(100);
                 builder.Property(p => p.LastName).IsRequired().HasMaxLength(100);
                 builder.Property(p => p.UserName).IsRequired().HasMaxLength(100);
-                builder.Property(p => p.Mobile).IsRequired().HasMaxLength(10);
+                builder.Property(p => p.PhoneNumber).IsRequired().HasMaxLength(10);
                 builder.Property(p => p.Email).IsRequired().HasMaxLength(10);
                 builder.Property(p => p.Biography).IsRequired().HasMaxLength(500);
                 builder.Property(p => p.PasswordHash).IsRequired().HasMaxLength(10);

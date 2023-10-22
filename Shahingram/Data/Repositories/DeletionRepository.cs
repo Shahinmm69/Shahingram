@@ -1,4 +1,5 @@
-﻿using Data.Contract;
+﻿using Common;
+using Data.Contract;
 using Entities.Common;
 using Entities.Models;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    public class DeletionRepository<TEntity> : Repository<TEntity>, IDeletionRepository<TEntity> where TEntity : class, IDeletion, IEntity
+    public class DeletionRepository<TEntity> : Repository<TEntity>, IScopedDependency, IDeletionRepository<TEntity> where TEntity : class, IDeletion, IEntity
     {
         protected readonly ApplicationDbContext DbContext;
         public DeletionRepository(ApplicationDbContext dbContext)

@@ -1,4 +1,5 @@
-﻿using Common.Exceptions;
+﻿using Common;
+using Common.Exceptions;
 using Data.Contract;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,7 @@ using Services.Contract;
 
 namespace Services.Services
 {
-    public class FollowServices : IFollowServices
+    public class FollowServices : IFollowServices, IScopedDependency
     {
         protected readonly ICreationRepository<Follow> creationfollowrepository;
         protected readonly IRepository<Follow> followrepository;

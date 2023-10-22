@@ -1,11 +1,12 @@
-﻿using Data.Contract;
+﻿using Common;
+using Data.Contract;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Services.Contract;
 
 namespace Services.Services
 {
-    public class PostServices : IPostServices
+    public class PostServices : IPostServices, IScopedDependency
     {
         protected readonly IRepository<PostPhoto> postphotorepository;
         protected readonly IRepository<PostVideo> postvideorepository;

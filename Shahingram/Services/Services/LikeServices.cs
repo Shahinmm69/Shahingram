@@ -1,4 +1,5 @@
-﻿using Common.Exceptions;
+﻿using Common;
+using Common.Exceptions;
 using Data.Contract;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Services.Services
 {
-    public class LikeServices : ILikeServices
+    public class LikeServices : ILikeServices, IScopedDependency
     {
         protected readonly ICreationRepository<Like> creationlikerepository;
         protected readonly IRepository<Like> likerepository;

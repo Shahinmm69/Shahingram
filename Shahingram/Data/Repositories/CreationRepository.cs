@@ -1,4 +1,5 @@
-﻿using Data.Contract;
+﻿using Common;
+using Data.Contract;
 using Entities.Common;
 using Entities.Models;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    public class CreationRepository<TEntity> : Repository<TEntity>, ICreationRepository<TEntity> where TEntity : Craetion
+    public class CreationRepository<TEntity> : Repository<TEntity>, IScopedDependency, ICreationRepository<TEntity> where TEntity : Craetion
     {
         protected readonly ApplicationDbContext DbContext;
         public CreationRepository(ApplicationDbContext dbContext)

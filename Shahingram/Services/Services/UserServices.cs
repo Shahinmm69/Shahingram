@@ -15,8 +15,10 @@ using System.Threading.Tasks;
 
 namespace Services.Services
 {
-    public class UserServices
+    public class UserServices : IScopedDependency, IUserServices
     {
+        protected readonly IRepository<Category> categoryrepository;
+        protected readonly IRepository<Country> countryrepository;
         protected readonly IRepository<UserPhoto> userphotorepository;
         protected readonly IRepository<Photo> photorepository;
         protected readonly IRepository<Video> videorepository;
@@ -25,7 +27,6 @@ namespace Services.Services
         protected readonly IRepository<Like> likerepository;
         protected readonly IRepository<Follow> followrepository;
         protected readonly IRepository<Comment> commentrepository;
-        protected readonly IRepository<User> userrepository;
         protected readonly IDeletionRepository<Photo> deletephotorepository;
         protected readonly IDeletionRepository<Video> deletevideorepository;
         protected readonly ICreationRepository<Photo> creationphotorepository;
@@ -33,19 +34,19 @@ namespace Services.Services
         protected readonly ICreationRepository<Direct> creationdirectorepository;
         protected readonly ICreationRepository<Hashtag> creationhashtagrepository;
         protected readonly ICreationRepository<Post> creationpostrepository;
-        protected readonly ICreationRepository<User> creationuserrepository;
+        protected readonly IUserRepository userrepository;
         protected readonly IPostServices postservices;
         public UserServices(IRepository<UserPhoto> userphotorepository, IRepository<Post> postrepository, IRepository<Photo> photorepository, IRepository<Video> videorepository
-            , IRepository<Direct> directrepository, IRepository<User> userrepository, IDeletionRepository<Photo> deletephotorepository, IDeletionRepository<Video> deletevideorepository
+            , IRepository<Direct> directrepository, IDeletionRepository<Photo> deletephotorepository, IDeletionRepository<Video> deletevideorepository
             , ICreationRepository<Photo> creationphotorepository, ICreationRepository<Video> creationvideorepository, ICreationRepository<Direct> creationdirectorepository
-            , ICreationRepository<Hashtag> creationhashtagrepository, IPostServices postservices, ICreationRepository<Post> creationpostrepository, ICreationRepository<User> creationuserrepository)
+            , ICreationRepository<Hashtag> creationhashtagrepository, IPostServices postservices, ICreationRepository<Post> creationpostrepository, IUserRepository userrepository
+            , IRepository<Category> categoryrepository, IRepository<Country> countryrepository, IRepository<Like> likerepository, IRepository<Follow> followrepository, IRepository<Comment> commentrepository)
         {
             this.userphotorepository = userphotorepository;
             this.postrepository = postrepository;
             this.videorepository = videorepository;
             this.photorepository = photorepository;
             this.directrepository = directrepository;
-            this.userrepository = userrepository;
             this.deletephotorepository = deletephotorepository;
             this.deletevideorepository = deletevideorepository;
             this.creationphotorepository = creationphotorepository;
@@ -54,7 +55,12 @@ namespace Services.Services
             this.creationhashtagrepository = creationhashtagrepository;
             this.postservices = postservices;
             this.creationpostrepository = creationpostrepository;
-            this.creationuserrepository = creationuserrepository;
+            this.userrepository = userrepository;
+            this.categoryrepository = categoryrepository;
+            this.countryrepository = countryrepository;
+            this.likerepository = likerepository;
+            this.followrepository = followrepository;
+            this.commentrepository = commentrepository;
         }
 
         public async Task CraetionConfigAsync(User entity, CancellationToken cancellationToken)
@@ -63,7 +69,7 @@ namespace Services.Services
 
             if (user == null || user.IsDeleted == true)
             {
-                await creationuserrepository.CraetionDateAsync(entity, cancellationToken);
+                await userrepository.CraetionDateAsync(entity, cancellationToken);
             }
             else
             {
@@ -71,7 +77,7 @@ namespace Services.Services
             }
         }
 
-        public async Task NewPhotoHandlerAsync(string address,int id, CancellationToken cancellationToken)
+        public async Task NewPhotoHandlerAsync(string address, int id, CancellationToken cancellationToken)
         {
             var newphoto = new Photo() { Address = address, UserCraetionId = id, Describtion = await GetDescribtionAsync(id, cancellationToken) };
             await creationphotorepository.CraetionDateAsync(newphoto, cancellationToken);
@@ -95,6 +101,26 @@ namespace Services.Services
                 await creationpostrepository.CraetionDateAsync(newpost, cancellationToken);
                 await postservices.NewVideoHandlerAsync(result.Address, newpost.Id, cancellationToken);
             }
+        }
+
+        public async Task<int> GetCategoryIdAsync(string title, CancellationToken cancellationToken)
+        {
+            var category = await categoryrepository.TableNoTracking.Where(x => x.Title == title).SingleAsync();
+
+            if (category is not null)
+                return category.Id;
+            else
+                throw new NotFoundException("Category isn't exist");
+        }
+
+        public async Task<int> GetCountryIdAsync(string title, CancellationToken cancellationToken)
+        {
+            var country = await countryrepository.TableNoTracking.Where(x => x.Title == title).SingleAsync();
+
+            if (country is not null)
+                return country.Id;
+            else
+                throw new NotFoundException("Country isn't exist");
         }
 
         public async Task<Photo> GetPhotoAsync(int id, CancellationToken cancellationToken)

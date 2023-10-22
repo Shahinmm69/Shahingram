@@ -13,7 +13,7 @@ namespace Entities.Models
         public DateTime? DeletionDate { get; set; }
         public int? UserDeletionId { get; set; }
 
-        public virtual ICollection<PostVideo> PostVideos { get; set; }
-        public virtual ICollection<DirectVideo> DirectVideos { get; set; }
+        public virtual ICollection<PostVideo>? PostVideos { get; set; }
+        public virtual ICollection<DirectVideo>? DirectVideos { get; set; }
     }
 }

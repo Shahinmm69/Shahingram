@@ -13,7 +13,7 @@ namespace Entities.Models
         public DateTime? DeletionDate { get; set; }
         public int? UserDeletionId { get; set; }
 
-        public virtual ICollection<PostHashtag> PostHashtags { get; set; }
-        public virtual ICollection<CommentHashtag> CommentHashtags { get; set; }
+        public virtual ICollection<PostHashtag>? PostHashtags { get; set; }
+        public virtual ICollection<CommentHashtag>? CommentHashtags { get; set; }
     }
 }

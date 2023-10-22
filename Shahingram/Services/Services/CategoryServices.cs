@@ -1,4 +1,5 @@
-﻿using Common.Exceptions;
+﻿using Common;
+using Common.Exceptions;
 using Data.Contract;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Services.Services
 {
-    public class CategoryServices : ICategoryServices
+    public class CategoryServices : ICategoryServices, IScopedDependency
     {
         protected readonly ICreationRepository<Category> creationcategoryrepository;
         protected readonly IRepository<Category> categoryrepository;

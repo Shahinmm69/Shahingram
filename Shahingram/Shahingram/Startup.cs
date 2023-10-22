@@ -10,17 +10,21 @@ using WebFramework.CustomMapping;
 //using WebFramework.Middlewares;
 using WebFramework.Swagger;
 using WebFramework.CustomMapping;
+using Common;
+using WebFramework.Middlewares;
 
 namespace MyApi
 {
     public class Startup
     {
+        private readonly SiteSettings _siteSetting;
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
             AutoMapperConfiguration.InitializeAutoMapper();
+            _siteSetting = configuration.GetSection(nameof(SiteSettings)).Get<SiteSettings>();
 
         }
 
@@ -39,6 +43,8 @@ namespace MyApi
                     .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddCustomIdentity(_siteSetting.IdentitySettings);
+
             services.AddControllers(options =>
             {
                 //options.Filters.Add(new AuthorizeFilter()); 
@@ -51,7 +57,11 @@ namespace MyApi
                 //option.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             });
 
+            services.AddCustomApiVersioning();
+
             services.AddSwagger();
+
+            services.AddJwtAuthentication(_siteSetting.JwtSettings);
 
         }
         public void ConfigureContainer(ContainerBuilder builder)
@@ -65,7 +75,7 @@ namespace MyApi
         {
             app.IntializeDatabase();
 
-            //app.UseCustomExceptionHandler();
+            app.UseCustomExceptionHandler();
 
             app.UseHsts(env);
 
@@ -81,15 +91,16 @@ namespace MyApi
             //Use this config just in Develoment (not in Production)
             //app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
+            //app.UseRouting();
             app.UseEndpoints(config =>
             {
                 config.MapControllers(); // Map attribute routing
-                //    .RequireAuthorization(); Apply AuthorizeFilter as global filter to all endpoints
-                //config.MapDefaultControllerRoute(); // Map default route {controller=Home}/{action=Index}/{id?}
+                                         //    //    .RequireAuthorization(); Apply AuthorizeFilter as global filter to all endpoints
+                                         //    //config.MapDefaultControllerRoute(); // Map default route {controller=Home}/{action=Index}/{id?}
             });
 
-            //Using 'UseMvc' to configure MVC is not supported while using Endpoint Routing.
-            //To continue using 'UseMvc', please set 'MvcOptions.EnableEndpointRouting = false' inside 'ConfigureServices'.
+            ////Using 'UseMvc' to configure MVC is not supported while using Endpoint Routing.
+            ////To continue using 'UseMvc', please set 'MvcOptions.EnableEndpointRouting = false' inside 'ConfigureServices'.
             //app.UseMvc();
         }
     }

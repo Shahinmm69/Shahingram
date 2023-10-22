@@ -1,4 +1,5 @@
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore;
 using MyApi;
 using NLog;
 using NLog.Web;

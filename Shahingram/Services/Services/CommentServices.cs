@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Services.Contract;
+using Common;
 
 namespace Services.Services
 {
-    public class CommentServices : ICommentServices
+    public class CommentServices : ICommentServices, IScopedDependency
     {
         protected readonly IRepository<CommentHashtag> commenthashtagrepository;
         protected readonly IRepository<Hashtag> hashtagrepository;

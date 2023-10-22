@@ -1,4 +1,5 @@
-﻿using Data.Contract;
+﻿using Common;
+using Data.Contract;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Services.Contract;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Services.Services
 {
-    public class HashtagServices : IHashtagServices
+    public class HashtagServices : IHashtagServices, IScopedDependency
     {
         protected readonly IRepository<Post> postrepository;
         protected readonly IRepository<Comment> commentrepository;

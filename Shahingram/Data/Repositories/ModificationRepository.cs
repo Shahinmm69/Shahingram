@@ -1,4 +1,5 @@
-﻿using Data.Contract;
+﻿using Common;
+using Data.Contract;
 using Entities.Common;
 using Entities.Models;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    public class ModificationRepository<TEntity> : Repository<TEntity>, IModificationRepository<TEntity> where TEntity : Modification
+    public class ModificationRepository<TEntity> : Repository<TEntity>, IScopedDependency, IModificationRepository<TEntity> where TEntity : Modification
     {
         protected readonly ApplicationDbContext DbContext;
         public ModificationRepository(ApplicationDbContext dbContext)

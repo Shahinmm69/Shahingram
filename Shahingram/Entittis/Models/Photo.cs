@@ -19,8 +19,8 @@ namespace Entities.Models
         public DateTime? DeletionDate { get; set; }
         public int? UserDeletionId { get; set; }
 
-        public virtual ICollection<UserPhoto> UserPhotos { get; set; }
-        public virtual ICollection<PostPhoto> PostPhotos { get; set; }
-        public virtual ICollection<DirectPhoto> DirectPhotos { get; set; }
+        public virtual ICollection<UserPhoto>? UserPhotos { get; set; }
+        public virtual ICollection<PostPhoto>? PostPhotos { get; set; }
+        public virtual ICollection<DirectPhoto>? DirectPhotos { get; set; }
     }
 }

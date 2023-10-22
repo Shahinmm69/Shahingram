@@ -1,4 +1,5 @@
-﻿using Common.Exceptions;
+﻿using Common;
+using Common.Exceptions;
 using Data.Contract;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Services.Services
 {
-    public class CountryServices : ICountryServices
+    public class CountryServices : ICountryServices, IScopedDependency
     {
         protected readonly ICreationRepository<Country> creationcountryrepository;
         protected readonly IRepository<Country> countryrepository;
