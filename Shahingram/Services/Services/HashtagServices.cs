@@ -5,13 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using Services.Contract;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Services.Services
 {
-    public class HashtagServices : IHashtagServices, IScopedDependency
+    public class HashtagServices : IScopedDependency, IHashtagServices
     {
         protected readonly IRepository<Post> postrepository;
         protected readonly IRepository<Comment> commentrepository;
@@ -26,30 +27,24 @@ namespace Services.Services
             this.posthashtagrepository = posthashtagrepository;
         }
 
-        public async IAsyncEnumerable<object?> Search(Hashtag hashtag, CancellationToken cancellationToken)
+        public async Task<List<Post>?> SearchPosts(Hashtag hashtag, int pageNumer, int pageSize, CancellationToken cancellationToken)
         {
-            object? result;
             if (hashtag.IsDeleted == false)
             {
-                var posthashtags = await posthashtagrepository.TableNoTracking.Where(x => x.HashtagId == hashtag.Id).ToListAsync();
-                var commenthashtags = await commenthashtagrepository.TableNoTracking.Where(x => x.HashtagId == hashtag.Id).ToListAsync();
-                if (posthashtags != null)
-                {
-                    foreach (var posthashtag in posthashtags)
-                    {
-                        result = await postrepository.GetByIdAsync(cancellationToken, posthashtag.PostId);
-                        yield return result as PostHashtag;
-                    }
-                }
-                if (commenthashtags != null)
-                {
-                    foreach (var commenthashtag in commenthashtags)
-                    {
-                        result = await commentrepository.GetByIdAsync(cancellationToken, commenthashtag.CommentId);
-                        yield return result as CommentHashtag;
-                    }
-                }
+                var posthashtags = await posthashtagrepository.TableNoTracking.Where(x => x.HashtagId == hashtag.Id).Include(x => x.Hashtag).ToListAsync(cancellationToken);
+                return await postrepository.TableNoTracking.Include(x => posthashtags).Skip((pageNumer - 1) * pageSize).Take(pageSize).ToListAsync();
             }
+            return null;
+        }
+
+        public async Task<List<Comment>?> SearchComments(Hashtag hashtag, int pageNumer, int pageSize, CancellationToken cancellationToken)
+        {
+            if (hashtag.IsDeleted == false)
+            {
+                var commenthashtags = await commenthashtagrepository.TableNoTracking.Where(x => x.HashtagId == hashtag.Id).Include(x => x.Hashtag).ToListAsync(cancellationToken);
+                return await commentrepository.TableNoTracking.Include(x => commenthashtags).Skip((pageNumer - 1) * pageSize).Take(pageSize).ToListAsync();
+            }
+            return null;
         }
     }
 }

@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Services.Contract;
 using Common;
+using System.Drawing.Printing;
 
 namespace Services.Services
 {
-    public class CommentServices : ICommentServices, IScopedDependency
+    public class CommentServices : IScopedDependency, ICommentServices
     {
         protected readonly IRepository<CommentHashtag> commenthashtagrepository;
         protected readonly IRepository<Hashtag> hashtagrepository;
@@ -27,14 +28,10 @@ namespace Services.Services
             this.creationhashtagrepository = creationhashtagrepository;
         }
 
-        public async IAsyncEnumerable<Comment> GetReplies(int id, CancellationToken cancellationToken)
-        {
-            var comment = await commentbaserepository.GetByIdAsync(cancellationToken, id);
-            var children = comment.Children;
-            var replies = children.Where(x => x.IsDeleted == false);
-            foreach (var reply in replies)
-                yield return reply;
-        }
+        public async Task<List<Comment>>? GetReplies(int id, int pageNumer, int pageSize, CancellationToken cancellationToken) =>
+            await commentbaserepository.TableNoTracking.Where(x => x.Id == id).Include(x => x.Children).Where(x => x.Reply.IsDeleted == false)
+            .Skip((pageNumer - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
+
 
         public async Task HashtagsHandler(int id, CancellationToken cancellationToken)
         {

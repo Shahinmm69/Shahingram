@@ -40,7 +40,8 @@ namespace Services.Services
             , IRepository<Direct> directrepository, IDeletionRepository<Photo> deletephotorepository, IDeletionRepository<Video> deletevideorepository
             , ICreationRepository<Photo> creationphotorepository, ICreationRepository<Video> creationvideorepository, ICreationRepository<Direct> creationdirectorepository
             , ICreationRepository<Hashtag> creationhashtagrepository, IPostServices postservices, ICreationRepository<Post> creationpostrepository, IUserRepository userrepository
-            , IRepository<Category> categoryrepository, IRepository<Country> countryrepository, IRepository<Like> likerepository, IRepository<Follow> followrepository, IRepository<Comment> commentrepository)
+            , IRepository<Category> categoryrepository, IRepository<Country> countryrepository, IRepository<Like> likerepository, IRepository<Follow> followrepository
+            , IRepository<Comment> commentrepository)
         {
             this.userphotorepository = userphotorepository;
             this.postrepository = postrepository;
@@ -79,10 +80,26 @@ namespace Services.Services
 
         public async Task NewPhotoHandlerAsync(string address, int id, CancellationToken cancellationToken)
         {
-            var newphoto = new Photo() { Address = address, UserCraetionId = id, Describtion = await GetDescribtionAsync(id, cancellationToken) };
-            await creationphotorepository.CraetionDateAsync(newphoto, cancellationToken);
-            var newuserphoto = new UserPhoto() { UserId = id, PhotoId = newphoto.Id };
-            await userphotorepository.AddAsync(newuserphoto, cancellationToken);
+            var userphoto = await userphotorepository.TableNoTracking.Where(x => x.UserId == id).Include(x => x.Photo).Where(x => x.Photo.IsDeleted == false).ToListAsync();
+
+            if (userphoto is null)
+            {
+                var newphoto = new Photo() { Address = address, UserCraetionId = id, Describtion = await GetDescribtionAsync(id, cancellationToken) };
+                await creationphotorepository.CraetionDateAsync(newphoto, cancellationToken);
+                var newuserphoto = new UserPhoto() { UserId = id, PhotoId = newphoto.Id };
+                await userphotorepository.AddAsync(newuserphoto, cancellationToken);
+            }
+            else
+                throw new BadRequestException("شما یک تصویر فعال دارید");
+        }
+
+        public async Task DeletePhotoHandlerAsync(int id, CancellationToken cancellationToken)
+        {
+            var userphoto = await userphotorepository.TableNoTracking.Where(x => x.UserId == id).Include(x => x.Photo).Where(x => x.Photo.IsDeleted == false).SingleAsync();
+            if (userphoto is null)
+                throw new BadRequestException("شما تصویر فعالی ندارید");
+            else
+                await deletephotorepository.DeletionDateAsync(userphoto.Photo, cancellationToken);
         }
 
         public async Task NewPostHandlerAsync(object? file, string? text, int id, int userid, CancellationToken cancellationToken)
@@ -123,113 +140,105 @@ namespace Services.Services
                 throw new NotFoundException("Country isn't exist");
         }
 
-        public async Task<Photo> GetPhotoAsync(int id, CancellationToken cancellationToken)
+        public async Task<List<User>?> GetPhotoAsync(int id, CancellationToken cancellationToken)
         {
-            var userphoto = await userphotorepository.TableNoTracking.Where(x => x.UserId == id).SingleAsync();
+            var userphoto = await userphotorepository.TableNoTracking.Where(x => x.UserId == id).Include(x => x.Photo).Where(x => x.Photo.IsDeleted == false).SingleAsync();
             var photo = userphoto.Photo;
-            var user = await userrepository.GetByIdAsync(cancellationToken, id);
+            var user = await userrepository.TableNoTracking.Where(x => x.Id == id).Include(x => userphoto).ToListAsync();
 
             if (photo is not null)
-            {
-                if (user.IsDeleted == true && photo.IsDeleted != true)
+                if (user[0].IsDeleted == true && photo.IsDeleted != true)
                 {
                     photo.Describtion = photo.Describtion + ", Is Deleted";
                     await deletephotorepository.DeletionDateAsync(photo, cancellationToken);
                 }
 
-                //one image that's show "This item is not exist!"
-                if (photo.IsDeleted == true)
-                    return await photorepository.TableNoTracking.Where(x => x.Id == 1).SingleAsync();
-            }
-
-            return photo;
+            return user;
         }
 
-        public async IAsyncEnumerable<Post> GetPostsAsync(int userid, CancellationToken cancellationToken)
+        public async Task<List<User>?> GetPostsAsync(int id, CancellationToken cancellationToken)
         {
-            var user = await userrepository.GetByIdAsync(cancellationToken, userid);
-            var posts = user.Posts.Where(x => x.UserId == userid && x.IsDeleted == false);
-
-            foreach (var post in posts)
-            {
-                if (posts is not null)
+            var userposts = await userrepository.TableNoTracking.Where(x => x.Id == id).Include(x => x.Posts).ToListAsync(cancellationToken);
+            if (userposts is not null)
+                foreach (var userpost in userposts)
                 {
-                    if (post.IsDeleted == true)
-                        yield return null;
+                    if (userpost.IsDeleted == true)
+                        userposts.Remove(userpost);
                 }
-                else
-                    yield return post;
-            }
+            return userposts;
         }
 
-        public async IAsyncEnumerable<Direct> GetSendDirectsAsync(int userid, CancellationToken cancellationToken)
+        public async Task<List<User>?> LoadContentAsync(int id, CancellationToken cancellationToken)
+        {
+            var userphotos = await GetPhotoAsync(id, cancellationToken);
+            var userposts = await GetPostsAsync(id, cancellationToken);
+            var user = (from userpost in userposts
+                        join userphoto in userphotos on userpost.Id equals userphoto.Id
+                        select new User()).ToList();
+            return user;
+        }
+
+        public async Task<List<Direct>?> GetSendDirectsAsync(int id, CancellationToken cancellationToken)
+        {
+            var user = await userrepository.GetByIdAsync(cancellationToken, id);
+            var directs = user.Directs.Where(x => x.UserSenderId == id && x.SenderIsDeleted == false).ToList();
+            foreach (var direct in directs)
+            {
+                if (directs is not null)
+                {
+                    if (direct.IsDeleted == true)
+                        directs.Remove(direct);
+                }
+            }
+            return directs;
+        }
+
+        public async Task<List<Direct>?> GetRecieveDirectsAsync(int userid, CancellationToken cancellationToken)
         {
             var user = await userrepository.GetByIdAsync(cancellationToken, userid);
-            var directs = user.Directs.Where((x => x.UserSenderId == userid && x.SenderIsDeleted == false));
+            var directs = user.Directs.Where(x => x.UserReceiverId == userid && x.ReceiverIsDeleted == false).ToList();
 
             foreach (var direct in directs)
             {
                 if (directs is not null)
                 {
                     if (direct.IsDeleted == true)
-                        yield return null;
+                        directs.Remove(direct);
                 }
-                else
-                    yield return direct;
             }
+            return directs;
         }
 
-        public async IAsyncEnumerable<Direct> GetRecieveDirectsAsync(int userid, CancellationToken cancellationToken)
+        public async Task<List<Follow>?> GetFollowersAsync(int userid, CancellationToken cancellationToken)
         {
             var user = await userrepository.GetByIdAsync(cancellationToken, userid);
-            var directs = user.Directs.Where((x => x.UserReceiverId == userid && x.ReceiverIsDeleted == false));
-
-            foreach (var direct in directs)
-            {
-                if (directs is not null)
-                {
-                    if (direct.IsDeleted == true)
-                        yield return null;
-                }
-                else
-                    yield return direct;
-            }
-        }
-
-        public async IAsyncEnumerable<Follow> GetFollowersAsync(int userid, CancellationToken cancellationToken)
-        {
-            var user = await userrepository.GetByIdAsync(cancellationToken, userid);
-            var followers = user.Follows.Where((x => x.UserId == userid && x.IsDeleted == false));
+            var followers = user.Follows.Where(x => x.UserId == userid && x.IsDeleted == false).ToList();
 
             foreach (var follower in followers)
             {
                 if (followers is not null)
                 {
-                    // one image that's show "This item is not exist!"
                     if (follower.IsDeleted == true)
-                        yield return null;
+                        followers.Remove(follower);
                 }
-                else
-                    yield return follower;
             }
+            return followers;
         }
 
-        public async IAsyncEnumerable<Follow> GetFollowingsAsync(int userid, CancellationToken cancellationToken)
+        public async Task<List<Follow>?> GetFollowingsAsync(int userid, CancellationToken cancellationToken)
         {
             var user = await userrepository.GetByIdAsync(cancellationToken, userid);
-            var followings = user.Follows.Where((x => x.FollowId == userid && x.IsDeleted == false));
+            var followings = user.Follows.Where(x => x.FollowId == userid && x.IsDeleted == false).ToList();
 
             foreach (var following in followings)
             {
                 if (followings is not null)
                 {
-                    // one image that's show "This item is not exist!"
                     if (following.IsDeleted == true)
-                        yield return null;
+                        followings.Remove(following);
                 }
-                else
-                    yield return following;
             }
+            return followings;
         }
 
         public async Task<string> GetDescribtionAsync(int id, CancellationToken cancellationToken)

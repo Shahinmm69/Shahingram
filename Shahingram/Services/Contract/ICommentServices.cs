@@ -4,7 +4,7 @@ namespace Services.Contract
 {
     public interface ICommentServices
     {
-        IAsyncEnumerable<Comment> GetReplies(int id, CancellationToken cancellationToken);
+        Task<List<Comment>>? GetReplies(int id, int pageNumer, int pageSize, CancellationToken cancellationToken);
         Task HashtagsHandler(int id, CancellationToken cancellationToken);
     }
 }

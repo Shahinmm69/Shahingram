@@ -31,7 +31,7 @@ namespace WebFramework.Swagger
                 //options.EnableAnnotations();
                 //options.DescribeAllEnumsAsStrings();
 
-                options.SwaggerDoc("v1", new OpenApiInfo{ Title = "Shahingram", Version = "v1", Description = "Created by s.maboudi69@gmail.com" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Shahingram", Version = "v1", Description = "Created by s.maboudi69@gmail.com" });
 
                 #region Filters
                 ////Enable to use [SwaggerRequestExample] & [SwaggerResponseExample]
@@ -67,7 +67,7 @@ namespace WebFramework.Swagger
                 //});
                 #endregion
             });
-        }    
+        }
 
         public static IApplicationBuilder UseSwaggerAndUI(this IApplicationBuilder app)
         {

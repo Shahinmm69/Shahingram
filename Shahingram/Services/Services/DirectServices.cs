@@ -10,10 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Services.Contract;
 using Common;
+using Common.Exceptions;
 
 namespace Services.Services
 {
-    public class DirectServices : IDirectServices, IScopedDependency
+    public class DirectServices : IScopedDependency, IDirectServices
     {
         protected readonly IRepository<DirectPhoto> directphotorepository;
         protected readonly IRepository<DirectVideo> directvideorepository;
@@ -26,10 +27,11 @@ namespace Services.Services
         protected readonly ICreationRepository<Photo> creationphotorepository;
         protected readonly ICreationRepository<Video> creationvideorepository;
         protected readonly ICreationRepository<Direct> creationdirectorepository;
+        protected readonly IModificationRepository<Direct> modificationdirectRepository;
         public DirectServices(IRepository<DirectPhoto> directphotorepository, IRepository<DirectVideo> directvideorepository, IRepository<Direct> directbaserepository
             , IRepository<Post> postrepository, ICreationRepository<Photo> creationphotorepository, ICreationRepository<Video> creationvideorepository
-            , ICreationRepository<Direct> creationdirectorepository, IRepository<Photo> photorepository, IRepository<Video> videorepository, IDeletionRepository<Photo> deletephotorepository
-            , IDeletionRepository<Video> deletevideorepository)
+            , ICreationRepository<Direct> creationdirectorepository, IRepository<Photo> photorepository, IRepository<Video> videorepository
+            , IDeletionRepository<Photo> deletephotorepository, IDeletionRepository<Video> deletevideorepository, IModificationRepository<Direct> modificationdirectRepository)
         {
             this.directphotorepository = directphotorepository;
             this.directvideorepository = directvideorepository;
@@ -42,6 +44,7 @@ namespace Services.Services
             this.creationdirectorepository = creationdirectorepository;
             this.deletephotorepository = deletephotorepository;
             this.deletevideorepository = deletevideorepository;
+            this.modificationdirectRepository = modificationdirectRepository;
         }
 
         //public Task DeletionDateAsync(Direct entity, CancellationToken cancellationToken)
@@ -58,111 +61,120 @@ namespace Services.Services
 
         public async Task NewPhotoHandlerAsync(string address, int id, int userid, CancellationToken cancellationToken)
         {
-            var newphoto = new Photo() { Address = address, UserCraetionId = userid, Describtion = await GetDescribtionAsync(id, cancellationToken) };
-            await creationphotorepository.CraetionDateAsync(newphoto, cancellationToken);
-            var newdirectphoto = new DirectPhoto() { DirectId = id, PhotoId = newphoto.Id };
-            await directphotorepository.AddAsync(newdirectphoto, cancellationToken);
+            var direct = await directbaserepository.GetByIdAsync(cancellationToken, id);
+            if (direct.DirectVideos == null && direct.Post == null)
+            {
+                var newphoto = new Photo() { Address = address, UserCraetionId = userid, Describtion = await GetDescribtionAsync(id, cancellationToken) };
+                await creationphotorepository.CraetionDateAsync(newphoto, cancellationToken);
+                var newdirectphoto = new DirectPhoto() { DirectId = id, PhotoId = newphoto.Id };
+                await directphotorepository.AddAsync(newdirectphoto, cancellationToken);
+            }
         }
 
         public async Task NewVideoHandlerAsync(string address, int id, int userid, CancellationToken cancellationToken)
         {
-            var newvideo = new Video() { Address = address, UserCraetionId = userid, Describtion = await GetDescribtionAsync(id, cancellationToken) };
-            await creationvideorepository.CraetionDateAsync(newvideo, cancellationToken);
-            var newdirectvideo = new DirectVideo() { DirectId = id, VideoId = newvideo.Id };
-            await directvideorepository.AddAsync(newdirectvideo, cancellationToken);
+            var direct = await directbaserepository.GetByIdAsync(cancellationToken, id);
+            if (direct.DirectPhotos == null && direct.Post == null)
+            {
+                var newvideo = new Video() { Address = address, UserCraetionId = userid, Describtion = await GetDescribtionAsync(id, cancellationToken) };
+                await creationvideorepository.CraetionDateAsync(newvideo, cancellationToken);
+                var newdirectvideo = new DirectVideo() { DirectId = id, VideoId = newvideo.Id };
+                await directvideorepository.AddAsync(newdirectvideo, cancellationToken);
+            }
         }
 
-        public async Task<Photo> GetPhotoAsync(int id, CancellationToken cancellationToken)
+        public async Task<Direct> GetPhotoAsync(int id, CancellationToken cancellationToken)
         {
-            var directphoto = await directphotorepository.TableNoTracking.Where(x => x.DirectId == id).SingleAsync();
-            var photo = directphoto.Photo;
-            var direct = await directbaserepository.GetByIdAsync(cancellationToken, id);
+            var directphotos = await directphotorepository.TableNoTracking.Where(x => x.DirectId == id).Include(x => x.Photo).ToListAsync();
+            var direct = await directbaserepository.TableNoTracking.Where(x => x.Id == id).Include(x => directphotos).SingleAsync();
 
-            if (photo is not null)
+            if (directphotos is not null)
             {
-                if (direct.IsDeleted == true && photo.IsDeleted != true)
-                {
-                    photo.Describtion = photo.Describtion + ", Is Deleted";
-                    await deletephotorepository.DeletionDateAsync(photo, cancellationToken);
-                }
+                foreach (var directphoto in directphotos)
+                    if (direct.IsDeleted == true && directphoto.Photo.IsDeleted != true)
+                    {
+                        directphoto.Photo.Describtion = directphoto.Photo.Describtion + ", Is Deleted";
+                        await deletephotorepository.DeletionDateAsync(directphoto.Photo, cancellationToken);
+                    }
 
-                //one image that's show "This item is not exist!"
-                if (photo.IsDeleted == true)
-                    return await Photorepository.TableNoTracking.Where(x => x.Id == 1).SingleAsync();
+                return direct;
             }
 
-            return photo;
+            return null;
+
         }
 
-        public async Task<Video> GetVideoAsync(int id, CancellationToken cancellationToken)
+        public async Task<Direct> GetVideoAsync(int id, CancellationToken cancellationToken)
         {
-            var directvideo = await directvideorepository.TableNoTracking.Where(x => x.DirectId == id).SingleAsync();
-            var video = directvideo.Video;
-            var direct = await directbaserepository.GetByIdAsync(cancellationToken, id);
+            var directvideos = await directvideorepository.TableNoTracking.Where(x => x.DirectId == id).Include(x => x.Video).ToListAsync();
+            var direct = await directbaserepository.TableNoTracking.Where(x => x.Id == id).Include(x => directvideos).SingleAsync();
 
-            if (video is not null)
+            if (directvideos is not null)
             {
-                if (direct.IsDeleted == true && video.IsDeleted != true)
-                {
-                    video.Describtion = video.Describtion + ", Is Deleted";
-                    await deletevideorepository.DeletionDateAsync(video, cancellationToken);
-                }
+                foreach (var directvideo in directvideos)
+                    if (direct.IsDeleted == true && directvideo.Video.IsDeleted != true)
+                    {
+                        directvideo.Video.Describtion = directvideo.Video.Describtion + ", Is Deleted";
+                        await deletevideorepository.DeletionDateAsync(directvideo.Video, cancellationToken);
+                    }
 
-                //one image that's show "This item is not exist!"
-                if (video.IsDeleted == true)
-                    return await Videorepository.TableNoTracking.Where(x => x.Id == 1).SingleAsync();
+                return direct;
             }
 
-            return video;
+            return null;
         }
 
-        public async Task<Post> GetPostAsync(int id, CancellationToken cancellationToken)
+        public async Task<Direct> GetPostAsync(int id, CancellationToken cancellationToken)
         {
-            var direct = await directbaserepository.GetByIdAsync(cancellationToken, id);
-            var post = await postrepository.GetByIdAsync(cancellationToken, direct.PostId);
+            var direct = await directbaserepository.TableNoTracking.Where(x => x.Id == id).Include(x => x.Post).SingleAsync();
+            var post = direct.Post;
 
             if (post is not null)
             {
                 // one image that's show "This item is not exist!"
                 if (post.IsDeleted == true)
-                    return await postrepository.TableNoTracking.Where(x => x.Id == 1).SingleAsync();
+                {
+                    direct.PostId = 1;
+                    _ = modificationdirectRepository.UpdatModificationDateAsync(direct, cancellationToken);
+                }
+
+                return await directbaserepository.TableNoTracking
+                    .Where(x => x.Id == id)
+                    .Include(x => x.Post)
+                    .SingleAsync();
             }
 
-            return post;
+            return null;
         }
 
-        public async Task<object?> LoadContentAsync(CancellationToken cancellationToken, params int[] ids)
+        public async Task<List<Direct>?> LoadContentAsync(CancellationToken cancellationToken, int pageNumer, int pageSize, params int[] ids)
         {
-            object result;
-            foreach (var id in ids)
+            var index = (pageNumer - 1) * pageSize;
+            var result = new List<Direct>();
+            for (int i = index; i <= index + pageSize; i++)
             {
-                var direct = await directbaserepository.GetByIdAsync(cancellationToken, id);
-                var photo = await GetPhotoAsync(direct.Id, cancellationToken);
-                var video = await GetVideoAsync(direct.Id, cancellationToken);
-                var post = await GetPostAsync(direct.Id, cancellationToken);
+                var direct = await directbaserepository.GetByIdAsync(cancellationToken, ids[i]);
+                var photo = await GetPhotoAsync(ids[i], cancellationToken);
+                var video = await GetVideoAsync(ids[i], cancellationToken);
+                var post = await GetPostAsync(ids[i], cancellationToken);
                 if (photo is not null)
-                {
-                    result = photo;
-                    return result as Photo;
-                }
+                    result.Add(photo);
                 else if (video is not null)
-                {
-                    result = video;
-                    return result as Video;
-                }
+                    result.Add(video);
                 else if (post is not null)
-                {
-                    result = post;
-                    return result as Post;
-                }
+                    result.Add(post);
+                else
+                    result.Add(direct);
             }
-            return null;
+            return result;
         }
 
         public async Task ForwardAsync(int id, int userreceiverid, CancellationToken cancellationToken)
         {
             var direct = await directbaserepository.GetByIdAsync(cancellationToken, id);
-            await creationdirectorepository.CraetionDateAsync(new Direct() { Text = direct.Text, PostId = direct.PostId, UserCraetionId = direct.UserCraetionId, UserSenderId = direct.UserReceiverId, UserReceiverId = userreceiverid, DirectPhotos = direct.DirectPhotos, DirectVideos = direct.DirectVideos, Post = direct.Post, User = direct.User }, cancellationToken);
+            direct.UserSenderId = direct.UserReceiverId;
+            direct.UserReceiverId = userreceiverid;
+            await creationdirectorepository.CraetionDateAsync(direct, cancellationToken);
         }
 
         public async Task<string> GetDescribtionAsync(int id, CancellationToken cancellationToken)

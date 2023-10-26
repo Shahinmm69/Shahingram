@@ -6,10 +6,10 @@ namespace Services.Contract
     {
         Task ForwardAsync(int id, int userreceiverid, CancellationToken cancellationToken);
         Task<string> GetDescribtionAsync(int id, CancellationToken cancellationToken);
-        Task<Photo> GetPhotoAsync(int id, CancellationToken cancellationToken);
-        Task<Post> GetPostAsync(int id, CancellationToken cancellationToken);
-        Task<Video> GetVideoAsync(int id, CancellationToken cancellationToken);
-        Task<object?> LoadContentAsync(CancellationToken cancellationToken, params int[] ids);
+        Task<Direct> GetPhotoAsync(int id, CancellationToken cancellationToken);
+        Task<Direct> GetPostAsync(int id, CancellationToken cancellationToken);
+        Task<Direct> GetVideoAsync(int id, CancellationToken cancellationToken);
+        Task<List<Direct>?> LoadContentAsync(CancellationToken cancellationToken, int pageNumer, int pageSize, params int[] ids);
         Task NewPhotoHandlerAsync(string address, int id, int userid, CancellationToken cancellationToken);
         Task NewVideoHandlerAsync(string address, int id, int userid, CancellationToken cancellationToken);
     }

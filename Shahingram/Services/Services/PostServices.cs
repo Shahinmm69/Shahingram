@@ -3,10 +3,11 @@ using Data.Contract;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Services.Contract;
+using System.Drawing.Printing;
 
 namespace Services.Services
 {
-    public class PostServices : IPostServices, IScopedDependency
+    public class PostServices : IScopedDependency, IPostServices
     {
         protected readonly IRepository<PostPhoto> postphotorepository;
         protected readonly IRepository<PostVideo> postvideorepository;
@@ -16,7 +17,7 @@ namespace Services.Services
         protected readonly IRepository<Hashtag> hashtagrepository;
         protected readonly IRepository<Like> likerepository;
         protected readonly IRepository<Comment> commentrepository;
-        protected readonly IRepository<Post> postepository;
+        protected readonly IRepository<Post> postrepository;
         protected readonly IDeletionRepository<Photo> deletephotorepository;
         protected readonly IDeletionRepository<Video> deletevideorepository;
         protected readonly ICreationRepository<Photo> creationphotorepository;
@@ -25,7 +26,7 @@ namespace Services.Services
         protected readonly ICreationRepository<Hashtag> creationhashtagrepository;
         public PostServices(IRepository<PostPhoto> postphotorepository, IRepository<PostVideo> postvideorepository
             , IRepository<PostHashtag> posthashtagrepository, IRepository<Photo> photorepository, IRepository<Video> videorepository, IRepository<Hashtag> hashtagrepository
-            , IRepository<Like> likerepository, IRepository<Post> postepository, IDeletionRepository<Photo> deletephotorepository, IDeletionRepository<Video> deletevideorepository
+            , IRepository<Like> likerepository, IRepository<Post> postrepository, IDeletionRepository<Photo> deletephotorepository, IDeletionRepository<Video> deletevideorepository
             , ICreationRepository<Photo> creationphotorepository, ICreationRepository<Video> creationvideorepository, ICreationRepository<Direct> creationdirectorepository
             , ICreationRepository<Hashtag> creationhashtagrepository, IRepository<Comment> commentrepository)
         {
@@ -36,7 +37,7 @@ namespace Services.Services
             this.photorepository = photorepository;
             this.hashtagrepository = hashtagrepository;
             this.likerepository = likerepository;
-            this.postepository = postepository;
+            this.postrepository = postrepository;
             this.deletephotorepository = deletephotorepository;
             this.deletevideorepository = deletevideorepository;
             this.creationphotorepository = creationphotorepository;
@@ -48,85 +49,80 @@ namespace Services.Services
 
         public async Task NewPhotoHandlerAsync(string address, int id, CancellationToken cancellationToken)
         {
-            var post = await postepository.GetByIdAsync(cancellationToken, id);
-            var newphoto = new Photo() { Address = address, UserCraetionId = post.UserId, Describtion = await GetDescribtionAsync(id, cancellationToken) };
-            await creationphotorepository.CraetionDateAsync(newphoto, cancellationToken);
-            var newpostphoto = new PostPhoto() { PostId = id, PhotoId = newphoto.Id };
-            await postphotorepository.AddAsync(newpostphoto, cancellationToken);
+            var post = await postrepository.GetByIdAsync(cancellationToken, id);
+
+            if (post.PostVideos is null)
+            {
+                var newphoto = new Photo() { Address = address, UserCraetionId = post.UserId, Describtion = await GetDescribtionAsync(id, cancellationToken) };
+                await creationphotorepository.CraetionDateAsync(newphoto, cancellationToken);
+                var newpostphoto = new PostPhoto() { PostId = id, PhotoId = newphoto.Id };
+                await postphotorepository.AddAsync(newpostphoto, cancellationToken);
+            }
         }
 
         public async Task NewVideoHandlerAsync(string address, int id, CancellationToken cancellationToken)
         {
-            var post = await postepository.GetByIdAsync(cancellationToken, id);
-            var newvideo = new Video() { Address = address, UserCraetionId = post.UserId, Describtion = await GetDescribtionAsync(id, cancellationToken) };
-            await creationvideorepository.CraetionDateAsync(newvideo, cancellationToken);
-            var newpostvideo = new PostVideo() { PostId = id, VideoId = newvideo.Id };
-            await postvideorepository.AddAsync(newpostvideo, cancellationToken);
+            var post = await postrepository.GetByIdAsync(cancellationToken, id);
+
+            if (post.PostPhotos is null)
+            {
+                var newvideo = new Video() { Address = address, UserCraetionId = post.UserId, Describtion = await GetDescribtionAsync(id, cancellationToken) };
+                await creationvideorepository.CraetionDateAsync(newvideo, cancellationToken);
+                var newpostvideo = new PostVideo() { PostId = id, VideoId = newvideo.Id };
+                await postvideorepository.AddAsync(newpostvideo, cancellationToken);
+            }
         }
 
-        public async Task<Photo> GetPhotoAsync(int id, CancellationToken cancellationToken)
+        public async Task<Post>? GetPhotoAsync(int id, CancellationToken cancellationToken)
         {
-            var postphoto = await postphotorepository.TableNoTracking.Where(x => x.PostId == id).SingleAsync();
-            var photo = postphoto.Photo;
-            var post = await postepository.GetByIdAsync(cancellationToken, id);
+            var postphotos = await postphotorepository.TableNoTracking.Where(x => x.PostId == id).Include(x => x.Photo).ToListAsync();
+            var post = await postrepository.TableNoTracking.Where(x => x.Id == id).Include(x => postphotos).SingleAsync();
 
-            if (photo is not null)
+            if (postphotos is not null)
             {
-                if (post.IsDeleted == true && photo.IsDeleted != true)
-                {
-                    photo.Describtion = photo.Describtion + ", Is Deleted";
-                    await deletephotorepository.DeletionDateAsync(photo, cancellationToken);
-                }
+                foreach (var postphoto in postphotos)
+                    if (post.IsDeleted == true && postphoto.Photo.IsDeleted != true)
+                    {
+                        postphoto.Photo.Describtion = postphoto.Photo.Describtion + ", Is Deleted";
+                        await deletephotorepository.DeletionDateAsync(postphoto.Photo, cancellationToken);
+                    }
 
-                //one image that's show "This item is not exist!"
-                if (photo.IsDeleted == true)
-                    return await photorepository.TableNoTracking.Where(x => x.Id == 1).SingleAsync();
+                return post;
             }
 
-            return photo;
+            return null;
         }
 
-        public async Task<Video> GetVideoAsync(int id, CancellationToken cancellationToken)
+        public async Task<Post>? GetVideoAsync(int id, CancellationToken cancellationToken)
         {
-            var postvideo = await postvideorepository.TableNoTracking.Where(x => x.PostId == id).SingleAsync();
-            var video = postvideo.Video;
-            var post = await postepository.GetByIdAsync(cancellationToken, id);
+            var postvideos = await postvideorepository.TableNoTracking.Where(x => x.PostId == id).Include(x => x.Video).ToListAsync();
+            var post = await postrepository.TableNoTracking.Where(x => x.Id == id).Include(x => postvideos).SingleAsync();
 
-            if (video is not null)
+            if (postvideos is not null)
             {
-                if (post.IsDeleted == true && video.IsDeleted != true)
-                {
-                    video.Describtion = video.Describtion + ", Is Deleted";
-                    await deletevideorepository.DeletionDateAsync(video, cancellationToken);
-                }
+                foreach (var postvideo in postvideos)
+                    if (post.IsDeleted == true && postvideo.Video.IsDeleted != true)
+                    {
+                        postvideo.Video.Describtion = postvideo.Video.Describtion + ", Is Deleted";
+                        await deletevideorepository.DeletionDateAsync(postvideo.Video, cancellationToken);
+                    }
 
-                //one image that's show "This item is not exist!"
-                if (video.IsDeleted == true)
-                    return await videorepository.TableNoTracking.Where(x => x.Id == 1).SingleAsync();
+                return post;
             }
 
-            return video;
+            return null;
         }
 
-        public async IAsyncEnumerable<Like>? GetLike(int id, CancellationToken cancellationToken)
-        {
-            var likes = await likerepository.TableNoTracking.Where(x => x.PostId == id && x.IsDeleted == false).ToListAsync();
-            foreach (var like in likes)
-                yield return await likerepository.GetByIdAsync(cancellationToken, like.Id);
-        }
+        public async Task<List<Like>?> GetLikesAsync(int id, int pageNumer, int pageSize, CancellationToken cancellationToken) =>
+            await likerepository.TableNoTracking.Where(x => x.PostId == id && x.IsDeleted == false).Skip((pageNumer - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
 
+        public async Task<List<Comment>?> GetCommentsAsync(int id, int pageNumer, int pageSize, CancellationToken cancellationToken) =>
+            await commentrepository.TableNoTracking.Where(x => x.PostId == id && x.IsDeleted == false).Skip((pageNumer - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
 
-        public async IAsyncEnumerable<Comment>? GetComment(int id, CancellationToken cancellationToken)
-        {
-            var comments = await commentrepository.TableNoTracking.Where(x => x.PostId == id && x.IsDeleted == false).ToListAsync();
-            foreach (var comment in comments)
-                yield return await commentrepository.GetByIdAsync(cancellationToken, comment.Id);
-        }
-
-        public async Task HashtagsHandler(int id, CancellationToken cancellationToken)
+        public async Task HashtagsHandlerAsync(int id, CancellationToken cancellationToken)
         {
             int index;
-            var post = await postepository.GetByIdAsync(cancellationToken, id);
+            var post = await postrepository.GetByIdAsync(cancellationToken, id);
             string? text = post.Text;
             if (text != null)
             {
@@ -158,38 +154,41 @@ namespace Services.Services
             }
         }
 
-        public async Task<object?> LoadContentAsync(CancellationToken cancellationToken, params int[] ids)
+        public async Task<List<Post>?> LoadContentAsync(CancellationToken cancellationToken, params int[] ids)
         {
-            object result;
+            var result = new List<Post>();
             foreach (var id in ids)
             {
-                var post = await postepository.GetByIdAsync(cancellationToken, id);
-                var photo = await GetPhotoAsync(post.Id, cancellationToken);
-                var video = await GetVideoAsync(post.Id, cancellationToken);
+                var post = await postrepository.GetByIdAsync(cancellationToken, id);
+                var photo = await GetPhotoAsync(id, cancellationToken);
+                var video = await GetVideoAsync(id, cancellationToken);
                 if (photo is not null)
-                {
-                    result = photo;
-                    return result as Photo;
-                }
+                    result.Add(photo);
                 else if (video is not null)
-                {
-                    result = video;
-                    return result as Video;
-                }
+                    result.Add(video);
+                else
+                    result.Add(post);
             }
-            //one image that's show "This item is not exist!"
-            return await photorepository.TableNoTracking.Where(x => x.Id == 1).SingleAsync() as Photo;
+            return result;
         }
 
         public async Task ForwardAsync(int id, int userreceiverid, CancellationToken cancellationToken)
         {
-            var post = await postepository.GetByIdAsync(cancellationToken, id);
-            await creationdirectorepository.CraetionDateAsync(new Direct() { Text = post.Text, PostId = post.Id, UserCraetionId = post.UserId/*, UserSenderId*/, UserReceiverId = userreceiverid, Post = post }, cancellationToken);
+            var post = await postrepository.GetByIdAsync(cancellationToken, id);
+            await creationdirectorepository.CraetionDateAsync(new Direct()
+            {
+                Text = post.Text,
+                PostId = post.Id,
+                UserCraetionId = post.UserId/*, UserSenderId*/
+                ,
+                UserReceiverId = userreceiverid,
+                Post = post
+            }, cancellationToken);
         }
 
         public async Task<string> GetDescribtionAsync(int id, CancellationToken cancellationToken)
         {
-            var post = await postepository.GetByIdAsync(cancellationToken, id);
+            var post = await postrepository.GetByIdAsync(cancellationToken, id);
             return $"UserId: {post.UserCraetionId} - PostId: {post.Id}";
         }
     }

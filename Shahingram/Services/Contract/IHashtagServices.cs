@@ -4,6 +4,7 @@ namespace Services.Contract
 {
     public interface IHashtagServices
     {
-        IAsyncEnumerable<object?> Search(Hashtag hashtag, CancellationToken cancellationToken);
+        Task<List<Comment>?> SearchComments(Hashtag hashtag, int pageNumer, int pageSize, CancellationToken cancellationToken);
+        Task<List<Post>?> SearchPosts(Hashtag hashtag, int pageNumer, int pageSize, CancellationToken cancellationToken);
     }
 }
