@@ -4,19 +4,20 @@ namespace Services.Contract
 {
     public interface IUserServices
     {
-        Task CraetionConfigAsync(User entity, CancellationToken cancellationToken);
+        Task<User> CraetionConfigAsync(User entity, CancellationToken cancellationToken);
         Task DeletePhotoHandlerAsync(int id, CancellationToken cancellationToken);
-        Task<int> GetCategoryIdAsync(string title, CancellationToken cancellationToken);
-        Task<int> GetCountryIdAsync(string title, CancellationToken cancellationToken);
+        Task<string> GetCategoryTitleByIdAsync(int id, CancellationToken cancellationToken);
+        Task<string> GetCountryTitleByIdAsync(int id, CancellationToken cancellationToken);
         Task<string> GetDescribtionAsync(int id, CancellationToken cancellationToken);
-        Task<List<Follow>?> GetFollowersAsync(int userid, CancellationToken cancellationToken);
-        Task<List<Follow>?> GetFollowingsAsync(int userid, CancellationToken cancellationToken);
-        Task<List<User>?> GetPhotoAsync(int id, CancellationToken cancellationToken);
-        Task<List<User>?> GetPostsAsync(int id, CancellationToken cancellationToken);
-        Task<List<Direct>?> GetRecieveDirectsAsync(int userid, CancellationToken cancellationToken);
-        Task<List<Direct>?> GetSendDirectsAsync(int id, CancellationToken cancellationToken);
-        Task<List<User>?> LoadContentAsync(int id, CancellationToken cancellationToken);
+        Task<List<int>?> GetDirectsWithAnotherAsync(int id, int anotherid, CancellationToken cancellationToken);
+        Task<List<int>?> GetFollowersAsync(int id, CancellationToken cancellationToken);
+        Task<int> GetFollowersCountAsync(int id, CancellationToken cancellationToken);
+        Task<List<int>?> GetFollowingsAsync(int id, CancellationToken cancellationToken);
+        Task<int> GetFollowingsCountAsync(int id, CancellationToken cancellationToken);
+        Task<string?> GetPhotoAsync(int id, CancellationToken cancellationToken);
+        Task<int> GetPostsCountAsync(int id, CancellationToken cancellationToken);
+        Task<List<int>?> GetPostsIdAsync(int id, CancellationToken cancellationToken);
+        Task<List<User>?> GetUsersHaveDirectsAsync(int id, CancellationToken cancellationToken);
         Task NewPhotoHandlerAsync(string address, int id, CancellationToken cancellationToken);
-        Task NewPostHandlerAsync(object? file, string? text, int id, int userid, CancellationToken cancellationToken);
     }
 }

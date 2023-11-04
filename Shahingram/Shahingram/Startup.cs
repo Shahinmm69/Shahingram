@@ -47,7 +47,7 @@ namespace MyApi
 
             services.AddControllers(options =>
             {
-                //options.Filters.Add(new AuthorizeFilter()); 
+                options.Filters.Add(new AuthorizeFilter());
 
             }).AddNewtonsoftJson(option =>
             {

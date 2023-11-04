@@ -34,9 +34,9 @@ namespace WebFramework.Configuration
                 //Applies any pending migrations for the context to the database like (Update-Database)
                 dbContext.Database.Migrate();
 
-                //var dataInitializers = scope.ServiceProvider.GetServices<IDataInitializer>();
-                //foreach (var dataInitializer in dataInitializers)
-                //    dataInitializer.InitializeData();
+                var dataInitializers = scope.ServiceProvider.GetServices<IDataInitializer>();
+                foreach (var dataInitializer in dataInitializers)
+                    dataInitializer.InitializeData();
             }
         }
     }

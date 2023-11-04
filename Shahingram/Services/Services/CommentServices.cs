@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Services.Contract;
 using Common;
 using System.Drawing.Printing;
+using Data.Repositories;
 
 namespace Services.Services
 {
@@ -28,10 +29,14 @@ namespace Services.Services
             this.creationhashtagrepository = creationhashtagrepository;
         }
 
-        public async Task<List<Comment>>? GetReplies(int id, int pageNumer, int pageSize, CancellationToken cancellationToken) =>
-            await commentbaserepository.TableNoTracking.Where(x => x.Id == id).Include(x => x.Children).Where(x => x.Reply.IsDeleted == false)
-            .Skip((pageNumer - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
-
+        public async Task<List<Comment>>? GetReplies(int id, int pageNumer, int pageSize, CancellationToken cancellationToken)
+        {
+            //await commentbaserepository.TableNoTracking.Where(x => x.Id == id).Include(x => x.Children).Where(x => x.Reply.IsDeleted == false)
+            //        .Skip((pageNumer - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
+            var comment = await commentbaserepository.GetByIdAsync(cancellationToken, id);
+            var replies = comment.Children.Where(x=> x.Reply.IsDeleted == false).Skip((pageNumer - 1) * pageSize).Take(pageSize).ToList();
+            return replies;
+        }
 
         public async Task HashtagsHandler(int id, CancellationToken cancellationToken)
         {
@@ -45,7 +50,7 @@ namespace Services.Services
                 index = 1;
             for (int i = index; i < hashtags.Length; i++)
             {
-                var hashtag = await hashtagrepository.TableNoTracking.Where(u => u.Title == hashtags[i]).SingleAsync();
+                var hashtag = await hashtagrepository.TableNoTracking.Where(u => u.Title.Equals(hashtags[i], StringComparison.OrdinalIgnoreCase)).SingleAsync();
 
                 if (hashtag.IsDeleted != true)
                 {

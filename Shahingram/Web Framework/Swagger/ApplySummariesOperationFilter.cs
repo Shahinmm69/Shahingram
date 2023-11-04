@@ -33,8 +33,8 @@ namespace WebFramework.Swagger
                 if (!operation.Summary.HasValue())
                     operation.Summary = $"Creates a {singularizeName}";
 
-                if (!operation.Parameters[0].Description.HasValue())
-                    operation.Parameters[0].Description = $"A {singularizeName} representation";
+                //if (!operation.Parameters[0].Description.HasValue())
+                //    operation.Parameters[0].Description = $"A {singularizeName} representation";
             }
             else if (IsActionName("Read", "Get"))
             {
@@ -52,16 +52,16 @@ namespace WebFramework.Swagger
                 //if (!operation.Parameters[0].Description.HasValue())
                 //    operation.Parameters[0].Description = $"A unique id for the {singularizeName}";
 
-                if (!operation.Parameters[0].Description.HasValue())
-                    operation.Parameters[0].Description = $"A {singularizeName} representation";
+                //if (!operation.Parameters[0].Description.HasValue())
+                //    operation.Parameters[0].Description = $"A {singularizeName} representation";
             }
             else if (IsActionName("Delete", "Remove"))
             {
                 if (!operation.Summary.HasValue())
                     operation.Summary = $"Deletes a {singularizeName} by unique id";
 
-                if (!operation.Parameters[0].Description.HasValue())
-                    operation.Parameters[0].Description = $"A unique id for the {singularizeName}";
+                //if (!operation.Parameters[0].Description.HasValue())
+                //    operation.Parameters[0].Description = $"A unique id for the {singularizeName}";
             }
 
             #region Local Functions

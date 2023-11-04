@@ -133,7 +133,7 @@ namespace Services.Services
                     index = 1;
                 for (int i = index; i < hashtags.Length; i++)
                 {
-                    var hashtag = await hashtagrepository.TableNoTracking.Where(u => u.Title == hashtags[i]).SingleAsync();
+                    var hashtag = await hashtagrepository.TableNoTracking.Where(u => u.Title.Equals(hashtags[i], StringComparison.OrdinalIgnoreCase)).SingleAsync();
 
                     if (hashtag.IsDeleted != true)
                     {

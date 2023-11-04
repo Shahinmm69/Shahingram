@@ -20,12 +20,6 @@ namespace Data.Repositories
         {
         }
 
-        public virtual Task CraetionDateAsync(User entity, CancellationToken cancellationToken)
-        {
-            entity.CrationDate = DateTime.Now;
-            return AddAsync(entity, cancellationToken);
-
-        }
         public virtual Task UpdatModificationDateAsync(User entity, CancellationToken cancellationToken)
         {
             entity.ModificationDate = DateTime.Now;

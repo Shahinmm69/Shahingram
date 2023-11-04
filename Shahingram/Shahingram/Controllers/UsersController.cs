@@ -1,172 +1,314 @@
-﻿//using Common.Exceptions;
-//using Data.Repositories;
-//using Entities;
-//using Microsoft.AspNetCore.Authorization;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.EntityFrameworkCore;
-//using Microsoft.Extensions.Logging;
-//using Services;
-//using System;
-//using System.Collections.Generic;
-//using System.Threading;
-//using System.Threading.Tasks;
-//using WebFramework.Api;
-//using WebFramework.Filters;
-//using Common;
-//using System.Security.Claims;
-//using Microsoft.AspNetCore.Identity;
-//using Swashbuckle.AspNetCore.Filters;
-//using Data.Contract;
-//using Services.Contract;
-//using Entities.Models;
-//using MyApi.Models;
+﻿using Common.Exceptions;
+using Common.Utilities;
+using Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using MyApi.Models;
+using Services;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using WebFramework.Api;
+using WebFramework.Filters;
+using Common;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Data.Contract;
+using Services.Contract;
+using Entities.Models;
+using Shahingram.Models;
 
-//namespace MyApi.Controllers.v1
-//{
-//    [ApiVersion("1")]
-//    public class UsersController : BaseController
-//    {
-//        private readonly IUserRepository userRepository;
-//        private readonly IUserServices userServices;
-//        private readonly ILogger<UsersController> logger;
-//        private readonly IJwtService jwtService;
-//        private readonly UserManager<User> userManager;
-//        private readonly RoleManager<Role> roleManager;
-//        private readonly SignInManager<User> signInManager;
+namespace MyApi.Controllers.v1
+{
+    [ApiVersion("1")]
+    public class UsersController : BaseController
+    {
+        private readonly IUserRepository userRepository;
+        private readonly ILogger<UsersController> logger;
+        private readonly IJwtService jwtService;
+        private readonly UserManager<User> userManager;
+        private readonly RoleManager<Role> roleManager;
+        private readonly SignInManager<User> signInManager;
+        private readonly IUserServices userServices;
 
-//        public UsersController(IUserRepository userRepository, ILogger<UsersController> logger, IJwtService jwtService,
-//            UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager, IUserServices userServices)
-//        {
-//            this.userRepository = userRepository;
-//            this.logger = logger;
-//            this.jwtService = jwtService;
-//            this.userManager = userManager;
-//            this.roleManager = roleManager;
-//            this.signInManager = signInManager;
-//            this.userServices = userServices;
-//        }
+        public UsersController(IUserRepository userRepository, ILogger<UsersController> logger, IJwtService jwtService,
+            UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager, IUserServices userServices)
+        {
+            this.userRepository = userRepository;
+            this.logger = logger;
+            this.jwtService = jwtService;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
+            this.signInManager = signInManager;
+            this.userServices = userServices;
+        }
 
-//        [HttpGet]
-//        [Authorize(Roles = "Admin")]
-//        public virtual async Task<ActionResult<List<User>>> Get(CancellationToken cancellationToken)
-//        {
-//            //var userName = HttpContext.User.Identity.GetUserName();
-//            //userName = HttpContext.User.Identity.Name;
-//            //var userId = HttpContext.User.Identity.GetUserId();
-//            //var userIdInt = HttpContext.User.Identity.GetUserId<int>();
-//            //var phone = HttpContext.User.Identity.FindFirstValue(ClaimTypes.MobilePhone);
-//            //var role = HttpContext.User.Identity.FindFirstValue(ClaimTypes.Role);
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public virtual async Task<ActionResult<List<User>>> Get(CancellationToken cancellationToken)
+        {
+            //var userName = HttpContext.User.Identity.GetUserName();
+            //userName = HttpContext.User.Identity.Name;
+            //var userId = HttpContext.User.Identity.GetUserId();
+            //var userIdInt = HttpContext.User.Identity.GetUserId<int>();
+            //var phone = HttpContext.User.Identity.FindFirstValue(ClaimTypes.MobilePhone);
+            //var role = HttpContext.User.Identity.FindFirstValue(ClaimTypes.Role);
 
-//            var users = await userRepository.TableNoTracking.ToListAsync(cancellationToken);
-//            return Ok(users);
-//        }
+            var users = await userRepository.TableNoTracking.ToListAsync(cancellationToken);
+            return Ok(users);
+        }
 
-//        [HttpGet("{id:int}")]
-//        public virtual async Task<ApiResult<User>> Get(int id, CancellationToken cancellationToken)
-//        {
-//            var user2 = await userManager.FindByIdAsync(id.ToString());
-//            var role = await roleManager.FindByNameAsync("Admin");
+        [HttpGet("{id:int}")]
+        public virtual async Task<ApiResult<UserSelectDto>> Get(int id, CancellationToken cancellationToken)
+        {
+            //_ = await userManager.FindByIdAsync(id.ToString());
+            //_ = await roleManager.FindByNameAsync("Admin");
 
-//            var user = await userRepository.GetByIdAsync(cancellationToken, id);
-//            if (user == null)
-//                return NotFound();
+            var user = await userRepository.GetByIdAsync(cancellationToken, id);
+            if (user == null)
+                return NotFound();
 
-//            await userManager.UpdateSecurityStampAsync(user);
-//            //await userRepository.UpdateSecuirtyStampAsync(user, cancellationToken);
+            await userManager.UpdateSecurityStampAsync(user);
 
-//            return user;
-//        }
+            var userSelectDto = new UserSelectDto
+            {
+                Biography = user.Biography,
+                BirthCountryTitle = await userServices.GetCountryTitleByIdAsync(user.BirthCountryId, cancellationToken),
+                CategoryTitle = await userServices.GetCategoryTitleByIdAsync(user.CategoryId, cancellationToken),
+                CrationDate = user.CrationDate.ToString(),
+                DeletionDate = user.DeletionDate.ToString(),
+                FirstName = user.FirstName,
+                FollowersCount = await userServices.GetFollowersCountAsync(id, cancellationToken),
+                FollowingsCount = await userServices.GetFollowersCountAsync(id, cancellationToken),
+                IsDeleted = user.IsDeleted.ToString(),
+                LastName = user.LastName,
+                LifeCountryTitle = await userServices.GetCountryTitleByIdAsync(user.LifeCountryId, cancellationToken),
+                MiddleName = user.MiddleName,
+                ModificationDate = user.ModificationDate.ToString(),
+                PostsCount = await userServices.GetPostsCountAsync(id, cancellationToken),
+                UserName = user.UserName,
+                PhotoAddress = await userServices.GetPhotoAsync(id, cancellationToken),
+                PostsId = await userServices.GetPostsIdAsync(id, cancellationToken)
+            };
+            return userSelectDto;
+        }
 
-//        /// <summary>
-//        /// This method generate JWT Token
-//        /// </summary>
-//        /// <param name="tokenRequest">The information of token request</param>
-//        /// <param name="cancellationToken"></param>
-//        /// <returns></returns>
-//        [HttpPost("[action]")]
-//        [AllowAnonymous]
-//        public virtual async Task<ActionResult> Token([FromForm] TokenRequest tokenRequest, CancellationToken cancellationToken)
-//        {
-//            if (!tokenRequest.grant_type.Equals("password", StringComparison.OrdinalIgnoreCase))
-//                throw new Exception("OAuth flow is not password.");
+        /// <summary>
+        /// This method generate JWT Token
+        /// </summary>
+        /// <param name="tokenRequest">The information of token request</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost("[action]")]
+        [AllowAnonymous]
+        public virtual async Task<ActionResult> Token([FromForm] TokenRequest tokenRequest, CancellationToken cancellationToken)
+        {
+            if (!tokenRequest.grant_type.Equals("password", StringComparison.OrdinalIgnoreCase))
+                throw new Exception("OAuth flow is not password.");
 
-//            //var user = await userRepository.GetByUserAndPass(username, password, cancellationToken);
-//            var user = await userManager.FindByNameAsync(tokenRequest.username);
-//            if (user == null)
-//                throw new BadRequestException("نام کاربری یا رمز عبور اشتباه است");
+            //var user = await userRepository.GetByUserAndPass(username, password, cancellationToken);
+            var user = await userManager.FindByNameAsync(tokenRequest.username);
+            if (user == null)
+                throw new BadRequestException("نام کاربری یا رمز عبور اشتباه است");
 
-//            var isPasswordValid = await userManager.CheckPasswordAsync(user, tokenRequest.password);
-//            if (!isPasswordValid)
-//                throw new BadRequestException("نام کاربری یا رمز عبور اشتباه است");
+            var isPasswordValid = await userManager.CheckPasswordAsync(user, tokenRequest.password);
+            if (!isPasswordValid)
+                throw new BadRequestException("نام کاربری یا رمز عبور اشتباه است");
 
+            var jwt = await jwtService.GenerateAsync(user);
+            return new JsonResult(jwt);
+        }
 
-//            //if (user == null)
-//            //    throw new BadRequestException("نام کاربری یا رمز عبور اشتباه است");
+        [HttpPost]
+        [AllowAnonymous]
+        public virtual async Task<ApiResult<User>> Create(UserDto userDto, CancellationToken cancellationToken)
+        {
+            logger.LogError("متد Create فراخوانی شد");
+            //HttpContext.RiseError(new Exception("متد Create فراخوانی شد"));
 
-//            var jwt = await jwtService.GenerateAsync(user);
-//            return new JsonResult(jwt);
-//        }
+            var user = new User
+            {
+                UserName = userDto.UserName,
+                Email = userDto.Email,
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
+                MiddleName = userDto.MiddleName,
+                Biography = userDto.Biography,
+                BirthCountryId = userDto.BirthCountryId,
+                LifeCountryId = userDto.LifeCountryId,
+                CategoryId = userDto.CategoryId,
+                PhoneNumber = userDto.Mobile,
+                UserCraetionId = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt()
+        };
+            var newUser = await userServices.CraetionConfigAsync(user, cancellationToken);
+            _ = await userManager.CreateAsync(newUser, userDto.Password);
+            _ = await roleManager.CreateAsync(new Role
+            {
+                Name = "Public",
+                Description = "public role"
+            });
+            _ = await userManager.AddToRoleAsync(newUser, "Public");
 
-//        [HttpPost]
-//        [AllowAnonymous]
-//        public virtual async Task<ApiResult<User>> Create(UserDto userDto, CancellationToken cancellationToken)
-//        {
-//            logger.LogError("متد Create فراخوانی شد");
-//            HttpContext.RiseError(new Exception("متد Create فراخوانی شد"));
+            return newUser;
+        }
 
-//            //var exists = await userRepository.TableNoTracking.AnyAsync(p => p.UserName == userDto.UserName);
-//            //if (exists)
-//            //    return BadRequest("نام کاربری تکراری است");
+        [HttpPut]
+        public virtual async Task<ApiResult> Update(User user, CancellationToken cancellationToken)
+        {
+            int id = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt();
+            var updateUser = await userRepository.GetByIdAsync(cancellationToken, id);
 
+            updateUser.UserName = user.UserName;
+            updateUser.PasswordHash = user.PasswordHash;
+            updateUser.PhoneNumber = user.PhoneNumber;
+            updateUser.FirstName = user.FirstName;
+            updateUser.LastName = user.LastName;
+            updateUser.MiddleName = user.MiddleName;
+            updateUser.Biography = user.Biography;
+            updateUser.BirthCountryId = user.BirthCountryId;
+            updateUser.LifeCountryId = user.LifeCountryId;
+            updateUser.Email = user.Email;
+            updateUser.CategoryId = user.CategoryId;
+            updateUser.UserModificationId = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt();
 
-//            var user = new User
-//            {
-//                Age = userDto.Age,
-//                FullName = userDto.FullName,
-//                Gender = userDto.Gender,
-//                UserName = userDto.UserName,
-//                Email = userDto.Email
-//            };
-//            var result = await userManager.CreateAsync(user, userDto.Password);
+            await userRepository.UpdatModificationDateAsync(updateUser, cancellationToken);
 
-//            var result2 = await roleManager.CreateAsync(new Role
-//            {
-//                Name = "Admin",
-//                Description = "admin role"
-//            });
+            return Ok();
+        }
 
-//            var result3 = await userManager.AddToRoleAsync(user, "Admin");
+        [HttpDelete]
+        public virtual async Task<ApiResult> Delete(CancellationToken cancellationToken)
+        {
+            int id = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt();
+            var user = await userRepository.GetByIdAsync(cancellationToken, id);
+            user.UserDeletionId = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt();
+            await userRepository.DeleteAsync(user, cancellationToken);
 
-//            //await userRepository.AddAsync(user, userDto.Password, cancellationToken);
-//            return user;
-//        }
+            return Ok();
+        }
 
-//        [HttpPut]
-//        public virtual async Task<ApiResult> Update(int id, User user, CancellationToken cancellationToken)
-//        {
-//            var updateUser = await userRepository.GetByIdAsync(cancellationToken, id);
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
+        public virtual async Task<ApiResult> Delete(int id, CancellationToken cancellationToken)
+        {
+            var user = await userRepository.GetByIdAsync(cancellationToken, id);
+            user.UserDeletionId = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt();
+            await userRepository.DeleteAsync(user, cancellationToken);
 
-//            updateUser.UserName = user.UserName;
-//            updateUser.PasswordHash = user.PasswordHash;
-//            updateUser.FullName = user.FullName;
-//            updateUser.Age = user.Age;
-//            updateUser.Gender = user.Gender;
-//            updateUser.IsActive = user.IsActive;
-//            updateUser.LastLoginDate = user.LastLoginDate;
+            return Ok();
+        }
 
-//            await userRepository.UpdateAsync(updateUser, cancellationToken);
+        [HttpPost("[action]")]
+        public virtual async Task<ApiResult> AddPhoto(IFormFile file, CancellationToken cancellationToken)
+        {
+            int id = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt();
+            if (file.Length == 1)
+            {
+                if (file.ContentType is "jpg" or "png" or "jpeg" or "bnp")
+                {
+                    var filePath = Path.GetTempFileName();
 
-//            return Ok();
-//        }
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                    await userServices.NewPhotoHandlerAsync(filePath, id, cancellationToken);
+                }
+                else
+                {
+                    throw new BadRequestException("فرمت فایل ارسالی اشتباه است");
+                }
+            }
+            return Ok();
+        }
 
-//        [HttpDelete]
-//        public virtual async Task<ApiResult> Delete(int id, CancellationToken cancellationToken)
-//        {
-//            var user = await userRepository.GetByIdAsync(cancellationToken, id);
-//            await userRepository.DeleteAsync(user, cancellationToken);
+        [HttpDelete("[action]")]
+        public virtual async Task<ApiResult> DeletePhoto(CancellationToken cancellationToken)
+        {
+            int id = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt();
+            await userServices.DeletePhotoHandlerAsync(id, cancellationToken);
+            return Ok();
+        }
 
-//            return Ok();
-//        }
-//    }
-//}
+        [HttpDelete("[action]/{id:int}")]
+        [Authorize(Roles = "Admin")]
+        public virtual async Task<ApiResult> DeletePhoto(int id, CancellationToken cancellationToken)
+        {
+            await userServices.DeletePhotoHandlerAsync(id, cancellationToken);
+            return Ok();
+        }
+
+        [HttpGet("[action]")]
+        public virtual async Task<List<User>> GetUsersHaveDirects(CancellationToken cancellationToken)
+        {
+            int id = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt();
+            var users = await userServices.GetUsersHaveDirectsAsync(id, cancellationToken);
+            return users;
+        }
+
+        [HttpGet("[action]/{id:int}")]
+        [Authorize(Roles = "Admin")]
+        public virtual async Task<List<User>> GetUsersHaveDirects(int id, CancellationToken cancellationToken)
+        {
+            var users = await userServices.GetUsersHaveDirectsAsync(id, cancellationToken);
+            return users;
+        }
+
+        [HttpGet("[action]")]
+        public virtual async Task<List<int>> GetDirectsIdWithAnother(int anoutherid, CancellationToken cancellationToken)
+        {
+            int id = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt();
+            var ids = await userServices.GetDirectsWithAnotherAsync(id, anoutherid, cancellationToken);
+            return ids;
+        }
+
+        [HttpGet("[action]/{id:int}")]
+        [Authorize(Roles = "Admin")]
+        public virtual async Task<List<int>> GetDirectsIdWithAnother(int id, int anoutherid, CancellationToken cancellationToken)
+        {
+            var ids = await userServices.GetDirectsWithAnotherAsync(id, anoutherid, cancellationToken);
+            return ids;
+        }
+
+        [HttpGet("[action]")]
+        public virtual async Task<ApiResult<User>> SearchWithUsername(string username, CancellationToken cancellationToken)
+        {
+            var user = await userManager.FindByNameAsync(username);
+            return user;
+        }
+
+        [HttpPost("[action]")]
+        [Authorize(Roles = "Admin")]
+        public virtual async Task<ApiResult<User>> CreateNewAdmin(UserDto userDto, CancellationToken cancellationToken)
+        {
+            var user = new User
+            {
+                UserName = userDto.UserName,
+                Email = userDto.Email,
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
+                MiddleName = userDto.MiddleName,
+                Biography = userDto.Biography,
+                BirthCountryId = userDto.BirthCountryId,
+                LifeCountryId = userDto.LifeCountryId,
+                CategoryId = userDto.CategoryId,
+                PhoneNumber = userDto.Mobile,
+                UserCraetionId = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt()
+            };
+            var newUser = await userServices.CraetionConfigAsync(user, cancellationToken);
+            _ = await userManager.CreateAsync(newUser, userDto.Password);
+            _ = await roleManager.CreateAsync(new Role
+            {
+                Name = "Admin",
+                Description = "admin role"
+            });
+            _ = await userManager.AddToRoleAsync(newUser, "Admin");
+
+            return user;
+        }
+    }
+}

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -26,7 +25,7 @@ namespace WebFramework.Swagger
             services.AddSwaggerGen(options =>
             {
                 //var xmlDocPath = Path.Combine(AppContext.BaseDirectory, "MyApi.xml");
-                ////show controller XML comments like summary
+                //show controller XML comments like summary
                 //options.IncludeXmlComments(xmlDocPath, true);
                 //options.EnableAnnotations();
                 //options.DescribeAllEnumsAsStrings();
@@ -41,11 +40,11 @@ namespace WebFramework.Swagger
                 //options.OperationFilter<AddFileParamTypesOperationFilter>();
 
                 ////Set summary of action if not already set
-                //options.OperationFilter<ApplySummariesOperationFilter>();
+                options.OperationFilter<ApplySummariesOperationFilter>();
 
-                //#region Add UnAuthorized to Response
+                #region Add UnAuthorized to Response
                 ////Add 401 response and security requirements (Lock icon) to actions that need authorization
-                //options.OperationFilter<UnauthorizedResponsesOperationFilter>(true, "Bearer");
+                options.OperationFilter<UnauthorizedResponsesOperationFilter>(true, "Bearer");
                 #endregion
 
                 #region Add Jwt Authentication
@@ -60,11 +59,38 @@ namespace WebFramework.Swagger
                 //{
                 //    {"Bearer", new string[] { }}
                 //});
-                //options.AddSecurityDefinition("Bearer", new OAuth2Scheme
-                //{
-                //    Flow = "password",
-                //    TokenUrl = "https://localhost:5001/api/v1/users/Token",
-                //});
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        Password = new OpenApiOAuthFlow
+                        {
+                            TokenUrl = new Uri("https://localhost:7087/api/v1/users/Token"),
+                            //Scopes = new Dictionary<string, string> {
+                            //    { "Admin", "Writer" }
+                            //}
+                        }
+                    }
+                });
+
+                options.AddSecurityRequirement(
+                new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme{
+                            Reference = new OpenApiReference{
+                                Id = "oauth2", //The name of the previously defined security scheme.
+                                Type = ReferenceType.SecurityScheme
+                            },
+                            Scheme = "oauth2",
+                            Name = "oauth2",
+                            In = ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
+                #endregion
                 #endregion
             });
         }
@@ -77,6 +103,7 @@ namespace WebFramework.Swagger
 
             app.UseSwaggerUI(options =>
             {
+                options.DocExpansion(DocExpansion.None);
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "V1 Docs");
             });
 
