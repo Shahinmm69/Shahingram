@@ -22,7 +22,7 @@ namespace Services.DataInitializer
         {
             if (!repository.TableNoTracking.Any(p => p.Title == "مهندسی"))
             {
-                repository.Add(new Category
+                 repository.Add(new Category
                 {
                     Title = "مهندسی"
                 });

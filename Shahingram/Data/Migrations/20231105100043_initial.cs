@@ -158,7 +158,6 @@ namespace Data.Migrations
                     BirthCountryId = table.Column<int>(type: "int", nullable: false),
                     LifeCountryId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    CountryId = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -184,8 +183,14 @@ namespace Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Countries_CountryId",
-                        column: x => x.CountryId,
+                        name: "FK_AspNetUsers_Countries_BirthCountryId",
+                        column: x => x.BirthCountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Countries_LifeCountryId",
+                        column: x => x.LifeCountryId,
                         principalTable: "Countries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -651,14 +656,19 @@ namespace Data.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_BirthCountryId",
+                table: "AspNetUsers",
+                column: "BirthCountryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_CategoryId",
                 table: "AspNetUsers",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_CountryId",
+                name: "IX_AspNetUsers_LifeCountryId",
                 table: "AspNetUsers",
-                column: "CountryId");
+                column: "LifeCountryId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

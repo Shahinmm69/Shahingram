@@ -5,6 +5,7 @@ using Data;
 using Data.Contract;
 using Data.Repositories;
 using Entities.Common;
+using Entities.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Services;
 using Services.Services;
@@ -20,6 +21,9 @@ namespace WebFramework.Configuration
         {
             //RegisterType > As > Liftetime
             containerBuilder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerLifetimeScope();
+            containerBuilder.RegisterGeneric(typeof(DeletionRepository<>)).As(typeof(IDeletionRepository<>)).InstancePerLifetimeScope();
+            containerBuilder.RegisterGeneric(typeof(CreationRepository<>)).As(typeof(ICreationRepository<>)).InstancePerLifetimeScope();
+            containerBuilder.RegisterGeneric(typeof(ModificationRepository<>)).As(typeof(IModificationRepository<>)).InstancePerLifetimeScope();
 
             var commonAssembly = typeof(SiteSettings).Assembly;
             var entitiesAssembly = typeof(IEntity).Assembly;

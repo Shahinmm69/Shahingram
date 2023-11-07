@@ -145,18 +145,19 @@ namespace MyApi.Controllers.v1
                 UserCraetionId = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt()
         };
             var newUser = await userServices.CraetionConfigAsync(user, cancellationToken);
-            _ = await userManager.CreateAsync(newUser, userDto.Password);
-            _ = await roleManager.CreateAsync(new Role
+            var result = await userManager.CreateAsync(newUser, userDto.Password);
+            var result1 = await roleManager.CreateAsync(new Role
             {
                 Name = "Public",
                 Description = "public role"
             });
-            _ = await userManager.AddToRoleAsync(newUser, "Public");
+            var result2 = await userManager.AddToRoleAsync(newUser, "Public");
 
             return newUser;
         }
 
         [HttpPut]
+        [AllowAnonymous]
         public virtual async Task<ApiResult> Update(User user, CancellationToken cancellationToken)
         {
             int id = signInManager.Context.Request.HttpContext.User.Identity.GetUserId().ToInt();

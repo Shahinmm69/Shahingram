@@ -29,7 +29,8 @@ namespace Entities.Models
         public int LifeCountryId { get; set; }
         public int CategoryId { get; set; }
 
-        public virtual Country Country { get; set; } = null!;
+        public virtual Country BirthCountry { get; set; } = null!;
+        public virtual Country LifeCountry { get; set; } = null!;
         public virtual Category Category { get; set; } = null!;
         public virtual ICollection<UserPhoto>? UserPhotos { get; set; }
         public virtual ICollection<Follow>? Follows { get; set; }
@@ -50,8 +51,8 @@ namespace Entities.Models
                 builder.Property(p => p.Email).IsRequired().HasMaxLength(10);
                 builder.Property(p => p.Biography).IsRequired().HasMaxLength(500);
                 builder.Property(p => p.PasswordHash).IsRequired().HasMaxLength(10);
-                builder.HasOne(p => p.Country).WithMany(c => c.Users).HasForeignKey(p => p.BirthCountryId);
-                builder.HasOne(p => p.Country).WithMany(c => c.Users).HasForeignKey(p => p.LifeCountryId);
+                builder.HasOne(p => p.BirthCountry).WithMany().HasForeignKey(p => p.BirthCountryId).OnDelete(DeleteBehavior.NoAction);
+                builder.HasOne(p => p.LifeCountry).WithMany().HasForeignKey(p => p.LifeCountryId).OnDelete(DeleteBehavior.NoAction);
                 builder.HasOne(p => p.Category).WithMany(c => c.Users).HasForeignKey(p => p.CategoryId);
             }
         }

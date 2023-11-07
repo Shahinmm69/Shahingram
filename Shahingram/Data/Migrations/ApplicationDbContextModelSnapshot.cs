@@ -541,9 +541,6 @@ namespace Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CountryId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CrationDate")
                         .HasColumnType("datetime2");
 
@@ -621,9 +618,11 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BirthCountryId");
+
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("CountryId");
+                    b.HasIndex("LifeCountryId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -1033,21 +1032,29 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Entities.Models.User", b =>
                 {
+                    b.HasOne("Entities.Models.Country", "BirthCountry")
+                        .WithMany()
+                        .HasForeignKey("BirthCountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Entities.Models.Category", "Category")
                         .WithMany("Users")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entities.Models.Country", "Country")
-                        .WithMany("Users")
-                        .HasForeignKey("CountryId")
+                    b.HasOne("Entities.Models.Country", "LifeCountry")
+                        .WithMany()
+                        .HasForeignKey("LifeCountryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("BirthCountry");
+
                     b.Navigation("Category");
 
-                    b.Navigation("Country");
+                    b.Navigation("LifeCountry");
                 });
 
             modelBuilder.Entity("Entities.Models.UserPhoto", b =>
@@ -1130,11 +1137,6 @@ namespace Data.Migrations
                     b.Navigation("Children");
 
                     b.Navigation("CommentHashtags");
-                });
-
-            modelBuilder.Entity("Entities.Models.Country", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Entities.Models.Direct", b =>

@@ -57,7 +57,7 @@ namespace MyApi
                 //option.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             });
 
-            services.AddCustomApiVersioning();
+            //services.AddCustomApiVersioning();
 
             services.AddSwagger();
 

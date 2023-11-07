@@ -66,7 +66,7 @@ namespace WebFramework.Swagger
                     {
                         Password = new OpenApiOAuthFlow
                         {
-                            TokenUrl = new Uri("https://localhost:7087/api/v1/users/Token"),
+                            TokenUrl = new Uri("https://localhost:7087/api/Users/Token"),
                             //Scopes = new Dictionary<string, string> {
                             //    { "Admin", "Writer" }
                             //}
