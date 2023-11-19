@@ -5,10 +5,13 @@ using WebFramework.CustomMapping;
 
 namespace WebFramework.Api
 {
-    public abstract class BaseDto<TDto, TEntity, TKey> : IHaveCustomMapping
+    public abstract class BaseSelectDto<TDto, TEntity, TKey> : IHaveCustomMapping
         where TDto : class, new()
         where TEntity : BaseEntity<TKey>, new()
     {
+        [Display(Name = "ردیف")]
+        public TKey Id { get; set; }
+
         public TEntity ToEntity()
         {
             return Mapper.Map<TEntity>(CastToDerivedClass(this));
@@ -24,7 +27,7 @@ namespace WebFramework.Api
             return Mapper.Map<TDto>(model);
         }
 
-        protected TDto CastToDerivedClass(BaseDto<TDto, TEntity, TKey> baseInstance)
+        protected TDto CastToDerivedClass(BaseSelectDto<TDto, TEntity, TKey> baseInstance)
         {
             return Mapper.Map<TDto>(baseInstance);
         }
@@ -50,15 +53,15 @@ namespace WebFramework.Api
         }
     }
 
-    public abstract class BaseDto<TDto, TEntity> : BaseDto<TDto, TEntity, int>
+    public abstract class BaseSelectDto<TDto, TEntity> : BaseSelectDto<TDto, TEntity, int>
         where TDto : class, new()
         where TEntity : BaseEntity<int>, new()
     {
 
     }
 
-    public abstract class BaseDto<TEntity> : BaseDto<TEntity, TEntity, int>
-        where TEntity : BaseEntity<int>, new()
+    public abstract class BaseSelectDto<TEntity> : BaseSelectDto<TEntity, TEntity, int>
+    where TEntity : BaseEntity<int>, new()
     {
 
     }

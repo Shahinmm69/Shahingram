@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Models
 {
-    public class Hashtag : Craetion, IDeletion
+    public class Hashtag : Creation, IDeletion
     {
         [Required]
         public string Title { get; set; }

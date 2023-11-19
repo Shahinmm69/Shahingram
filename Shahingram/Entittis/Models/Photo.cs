@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Entities.Models
 {
-    public class Photo : Craetion, IDeletion
+    public class Photo : Creation, IDeletion
     {
         [Required]
         public string Address { get; set; }

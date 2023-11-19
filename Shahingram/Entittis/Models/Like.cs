@@ -6,23 +6,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Models
 {
-    public class Like : Craetion, IDeletion
+    public class Like : Creation, IDeletion
     {
         public bool? IsDeleted { get; set; }
         public DateTime? DeletionDate { get; set; }
         public int? UserDeletionId { get; set; }
 
-        public int UserId { get; set; }
         public int PostId { get; set; }
 
-        public virtual User User { get; set; } = null!;
+        public virtual User UserCreation { get; set; } = null!;
         public virtual Post Post { get; set; } = null!;
 
         public class LikeConfiguration : IEntityTypeConfiguration<Like>
         {
             public void Configure(EntityTypeBuilder<Like> builder)
             {
-                builder.HasOne(p => p.User).WithMany(c => c.Likes).HasForeignKey(p => p.UserId);
+                builder.HasOne(p => p.UserCreation).WithMany(c => c.Likes).HasForeignKey(p => p.UserCreationId);
                 builder.HasOne(p => p.Post).WithMany(c => c.Likes).HasForeignKey(p => p.PostId);
             }
         }

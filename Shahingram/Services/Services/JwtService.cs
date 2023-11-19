@@ -28,10 +28,10 @@ namespace Services.Services
 
         public async Task<AccessToken> GenerateAsync(User user)
         {
-            var secretKey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.SecretKey); // longer that 16 character
+            var secretKey = Encoding.UTF8.GetBytes(/*_siteSetting.JwtSettings.SecretKey*/"LongerThan-16Char-SecretKey"); // longer that 16 character
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature);
 
-            var encryptionkey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.Encryptkey); //must be 16 character
+            var encryptionkey = Encoding.UTF8.GetBytes(/*_siteSetting.JwtSettings.Encryptkey*/"16CharEncryptKey"); //must be 16 character
             var encryptingCredentials = new EncryptingCredentials(new SymmetricSecurityKey(encryptionkey), SecurityAlgorithms.Aes128KW, SecurityAlgorithms.Aes128CbcHmacSha256);
 
             //var certificate = new X509Certificate2("d:\\aaaa2.cer"/*, "P@ssw0rd"*/);
@@ -41,11 +41,19 @@ namespace Services.Services
 
             var descriptor = new SecurityTokenDescriptor
             {
-                Issuer = _siteSetting.JwtSettings.Issuer,
-                Audience = _siteSetting.JwtSettings.Audience,
+                //Issuer = _siteSetting.JwtSettings.Issuer,
+                //Audience = _siteSetting.JwtSettings.Audience,
+                //IssuedAt = DateTime.Now,
+                //NotBefore = DateTime.Now.AddMinutes(_siteSetting.JwtSettings.NotBeforeMinutes),
+                //Expires = DateTime.Now.AddMinutes(_siteSetting.JwtSettings.ExpirationMinutes),
+                //SigningCredentials = signingCredentials,
+                //EncryptingCredentials = encryptingCredentials,
+                //Subject = new ClaimsIdentity(claims)
+                Issuer = "MyWebsite",
+                Audience = "MyWebsite",
                 IssuedAt = DateTime.Now,
-                NotBefore = DateTime.Now.AddMinutes(_siteSetting.JwtSettings.NotBeforeMinutes),
-                Expires = DateTime.Now.AddMinutes(_siteSetting.JwtSettings.ExpirationMinutes),
+                NotBefore = DateTime.Now.AddMinutes(0),
+                Expires = DateTime.Now.AddMinutes(60),
                 SigningCredentials = signingCredentials,
                 EncryptingCredentials = encryptingCredentials,
                 Subject = new ClaimsIdentity(claims)

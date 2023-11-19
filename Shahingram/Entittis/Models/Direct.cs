@@ -17,11 +17,11 @@ namespace Entities.Models
         public DateTime? DeletionDate { get; set; }
         public int? UserDeletionId { get; set; }
 
-        public int UserSenderId { get; set; }
         public int UserReceiverId { get; set; }
         public int? PostId { get; set; }
 
-        public virtual User User { get; set; } = null!;
+        public virtual User UserCreation { get; set; } = null!;
+        public virtual User UserReceiver { get; set; } = null!;
         public virtual Post? Post { get; set; } = null!;
         public virtual ICollection<DirectPhoto>? DirectPhotos { get; set; }
         public virtual ICollection<DirectVideo>? DirectVideos { get; set; }
@@ -30,8 +30,8 @@ namespace Entities.Models
         {
             public void Configure(EntityTypeBuilder<Direct> builder)
             {
-                builder.HasOne(p => p.User).WithMany(c => c.Directs).HasForeignKey(p => p.UserSenderId);
-                builder.HasOne(p => p.User).WithMany(c => c.Directs).HasForeignKey(p => p.UserReceiverId);
+                builder.HasOne(p => p.UserCreation).WithMany().HasForeignKey(p => p.UserCreationId).OnDelete(DeleteBehavior.NoAction);
+                builder.HasOne(p => p.UserReceiver).WithMany().HasForeignKey(p => p.UserReceiverId).OnDelete(DeleteBehavior.NoAction);
                 builder.HasOne(p => p.Post).WithMany(c => c.Directs).HasForeignKey(p => p.PostId);
             }
         }

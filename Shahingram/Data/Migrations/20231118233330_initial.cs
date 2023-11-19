@@ -34,8 +34,8 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserCraetionId = table.Column<int>(type: "int", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCreationId = table.Column<int>(type: "int", nullable: false),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserModificationId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -51,8 +51,8 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserCraetionId = table.Column<int>(type: "int", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCreationId = table.Column<int>(type: "int", nullable: false),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserModificationId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -71,8 +71,8 @@ namespace Data.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserDeletionId = table.Column<int>(type: "int", nullable: true),
-                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserCraetionId = table.Column<int>(type: "int", nullable: false)
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCreationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,8 +90,8 @@ namespace Data.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserDeletionId = table.Column<int>(type: "int", nullable: true),
-                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserCraetionId = table.Column<int>(type: "int", nullable: false)
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCreationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -109,8 +109,8 @@ namespace Data.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserDeletionId = table.Column<int>(type: "int", nullable: true),
-                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserCraetionId = table.Column<int>(type: "int", nullable: false)
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCreationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -290,17 +290,22 @@ namespace Data.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserDeletionId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    FollowId = table.Column<int>(type: "int", nullable: false),
-                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserCraetionId = table.Column<int>(type: "int", nullable: false)
+                    UserFollowId = table.Column<int>(type: "int", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCreationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Follows", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Follows_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Follows_AspNetUsers_UserCreationId",
+                        column: x => x.UserCreationId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Follows_AspNetUsers_UserFollowId",
+                        column: x => x.UserFollowId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -316,9 +321,8 @@ namespace Data.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserDeletionId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserCraetionId = table.Column<int>(type: "int", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCreationId = table.Column<int>(type: "int", nullable: false),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserModificationId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -326,8 +330,8 @@ namespace Data.Migrations
                 {
                     table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Posts_AspNetUsers_UserCreationId",
+                        column: x => x.UserCreationId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -369,11 +373,10 @@ namespace Data.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserDeletionId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: false),
                     ReplyId = table.Column<int>(type: "int", nullable: true),
-                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserCraetionId = table.Column<int>(type: "int", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCreationId = table.Column<int>(type: "int", nullable: false),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserModificationId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -381,8 +384,8 @@ namespace Data.Migrations
                 {
                     table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Comments_AspNetUsers_UserCreationId",
+                        column: x => x.UserCreationId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -411,12 +414,10 @@ namespace Data.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserDeletionId = table.Column<int>(type: "int", nullable: true),
-                    UserSenderId = table.Column<int>(type: "int", nullable: false),
                     UserReceiverId = table.Column<int>(type: "int", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserCraetionId = table.Column<int>(type: "int", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCreationId = table.Column<int>(type: "int", nullable: false),
                     ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserModificationId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -424,8 +425,14 @@ namespace Data.Migrations
                 {
                     table.PrimaryKey("PK_Directs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Directs_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Directs_AspNetUsers_UserCreationId",
+                        column: x => x.UserCreationId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Directs_AspNetUsers_UserReceiverId",
+                        column: x => x.UserReceiverId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -445,17 +452,16 @@ namespace Data.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: true),
                     DeletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserDeletionId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: false),
-                    CrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserCraetionId = table.Column<int>(type: "int", nullable: false)
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserCreationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Likes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Likes_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Likes_AspNetUsers_UserCreationId",
+                        column: x => x.UserCreationId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -698,9 +704,9 @@ namespace Data.Migrations
                 column: "ReplyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_UserId",
+                name: "IX_Comments_UserCreationId",
                 table: "Comments",
-                column: "UserId");
+                column: "UserCreationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DirectPhotos_DirectId",
@@ -718,9 +724,14 @@ namespace Data.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Directs_UserId",
+                name: "IX_Directs_UserCreationId",
                 table: "Directs",
-                column: "UserId");
+                column: "UserCreationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Directs_UserReceiverId",
+                table: "Directs",
+                column: "UserReceiverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DirectVideos_DirectId",
@@ -733,9 +744,14 @@ namespace Data.Migrations
                 column: "VideoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Follows_UserId",
+                name: "IX_Follows_UserCreationId",
                 table: "Follows",
-                column: "UserId");
+                column: "UserCreationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Follows_UserFollowId",
+                table: "Follows",
+                column: "UserFollowId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Likes_PostId",
@@ -743,9 +759,9 @@ namespace Data.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_UserId",
+                name: "IX_Likes_UserCreationId",
                 table: "Likes",
-                column: "UserId");
+                column: "UserCreationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostHashtags_HashtagId",
@@ -768,9 +784,9 @@ namespace Data.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_UserId",
+                name: "IX_Posts_UserCreationId",
                 table: "Posts",
-                column: "UserId");
+                column: "UserCreationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostVideos_PostId",

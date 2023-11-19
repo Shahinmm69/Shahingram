@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Entities.Common
 {
-    public abstract class Craetion : BaseEntity
+    public abstract class Creation : BaseEntity
     {
-        public DateTime CrationDate { get; set; }
-        public int UserCraetionId { get; set; }
+        public DateTime CreationDate { get; set; }
+        public int UserCreationId { get; set; }
     }
 }

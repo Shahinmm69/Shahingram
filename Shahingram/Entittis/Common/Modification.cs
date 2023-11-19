@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Entities.Common
 {
-    public abstract class Modification : Craetion
+    public abstract class Modification : Creation
     {
         public DateTime? ModificationDate { get; set; }
         public int? UserModificationId { get; set; }

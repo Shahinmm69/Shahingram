@@ -59,7 +59,7 @@ namespace Services.DataInitializer
                 //    LifeCountryId = 1,
                 //    CategoryId = 1,
                 //    PhoneNumber = "09121111111",
-                //    CrationDate = DateTime.Now
+                //    CreationDate = DateTime.Now
                 //};
                 ////_ =  userManager.CreateAsync(user, "shahin1369");
                 //var result = roleManager.CreateAsync(new Role

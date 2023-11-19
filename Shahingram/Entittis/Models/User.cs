@@ -33,11 +33,10 @@ namespace Entities.Models
         public virtual Country LifeCountry { get; set; } = null!;
         public virtual Category Category { get; set; } = null!;
         public virtual ICollection<UserPhoto>? UserPhotos { get; set; }
-        public virtual ICollection<Follow>? Follows { get; set; }
+        //public virtual ICollection<Follow>? Follows { get; set; }
         public virtual ICollection<Like>? Likes { get; set; }
         public virtual ICollection<Post>? Posts { get; set; }
         public virtual ICollection<Comment>? Comments { get; set; }
-        public virtual ICollection<Direct>? Directs { get; set; }
 
         public class UserConfiguration : IEntityTypeConfiguration<User>
         {

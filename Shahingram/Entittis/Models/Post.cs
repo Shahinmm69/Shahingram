@@ -14,9 +14,7 @@ namespace Entities.Models
         public DateTime? DeletionDate { get; set; }
         public int? UserDeletionId { get; set; }
 
-        public int UserId { get; set; }
-
-        public virtual User User { get; set; } = null!;
+        public virtual User UserCreation { get; set; } = null!;
         public virtual ICollection<Like>? Likes { get; set; }
         public virtual ICollection<Comment>? Comments { get; set; }
         public virtual ICollection<PostPhoto>? PostPhotos { get; set; }
@@ -28,7 +26,7 @@ namespace Entities.Models
         {
             public void Configure(EntityTypeBuilder<Post> builder)
             {
-                builder.HasOne(p => p.User).WithMany(c => c.Posts).HasForeignKey(p => p.UserId);
+                builder.HasOne(p => p.UserCreation).WithMany(c => c.Posts).HasForeignKey(p => p.UserCreationId);
             }
         }
     }

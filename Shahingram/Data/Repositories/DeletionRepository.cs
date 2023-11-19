@@ -27,7 +27,7 @@ namespace Data.Repositories
             entity.DeletionDate = DateTime.Now;
             entity.IsDeleted = true;
             entity.UserDeletionId = Convert.ToInt32(signInManager.Context.Request.HttpContext.User.Identity.GetUserId());
-            return DeleteAsync(entity, cancellationToken);
+            return UpdateAsync(entity, cancellationToken);
         }
     }
 }

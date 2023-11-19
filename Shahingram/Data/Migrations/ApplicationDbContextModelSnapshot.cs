@@ -17,7 +17,7 @@ namespace Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -30,7 +30,7 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CrationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ModificationDate")
@@ -41,7 +41,7 @@ namespace Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("UserCraetionId")
+                    b.Property<int>("UserCreationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserModificationId")
@@ -60,7 +60,7 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CrationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletionDate")
@@ -82,13 +82,10 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserCraetionId")
+                    b.Property<int>("UserCreationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserDeletionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserModificationId")
@@ -100,7 +97,7 @@ namespace Data.Migrations
 
                     b.HasIndex("ReplyId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserCreationId");
 
                     b.ToTable("Comments");
                 });
@@ -136,7 +133,7 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CrationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ModificationDate")
@@ -147,7 +144,7 @@ namespace Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("UserCraetionId")
+                    b.Property<int>("UserCreationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserModificationId")
@@ -166,7 +163,7 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CrationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletionDate")
@@ -190,13 +187,10 @@ namespace Data.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserCraetionId")
+                    b.Property<int>("UserCreationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserDeletionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserModificationId")
@@ -205,14 +199,13 @@ namespace Data.Migrations
                     b.Property<int>("UserReceiverId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserSenderId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserCreationId");
+
+                    b.HasIndex("UserReceiverId");
 
                     b.ToTable("Directs");
                 });
@@ -271,30 +264,29 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CrationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FollowId")
-                        .HasColumnType("int");
-
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("UserCraetionId")
+                    b.Property<int>("UserCreationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserDeletionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("UserFollowId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserCreationId");
+
+                    b.HasIndex("UserFollowId");
 
                     b.ToTable("Follows");
                 });
@@ -307,7 +299,7 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CrationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletionDate")
@@ -320,7 +312,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserCraetionId")
+                    b.Property<int>("UserCreationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserDeletionId")
@@ -339,7 +331,7 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CrationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletionDate")
@@ -351,20 +343,17 @@ namespace Data.Migrations
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserCraetionId")
+                    b.Property<int>("UserCreationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserDeletionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserCreationId");
 
                     b.ToTable("Likes");
                 });
@@ -381,7 +370,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CrationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletionDate")
@@ -394,7 +383,7 @@ namespace Data.Migrations
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("UserCraetionId")
+                    b.Property<int>("UserCreationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserDeletionId")
@@ -413,7 +402,7 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CrationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletionDate")
@@ -428,13 +417,10 @@ namespace Data.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserCraetionId")
+                    b.Property<int>("UserCreationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserDeletionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserModificationId")
@@ -442,7 +428,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserCreationId");
 
                     b.ToTable("Posts");
                 });
@@ -670,7 +656,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CrationDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletionDate")
@@ -683,7 +669,7 @@ namespace Data.Migrations
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("UserCraetionId")
+                    b.Property<int>("UserCreationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserDeletionId")
@@ -845,9 +831,9 @@ namespace Data.Migrations
                         .WithMany("Children")
                         .HasForeignKey("ReplyId");
 
-                    b.HasOne("Entities.Models.User", "User")
+                    b.HasOne("Entities.Models.User", "UserCreation")
                         .WithMany("Comments")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserCreationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -855,7 +841,7 @@ namespace Data.Migrations
 
                     b.Navigation("Reply");
 
-                    b.Navigation("User");
+                    b.Navigation("UserCreation");
                 });
 
             modelBuilder.Entity("Entities.Models.CommentHashtag", b =>
@@ -883,15 +869,23 @@ namespace Data.Migrations
                         .WithMany("Directs")
                         .HasForeignKey("PostId");
 
-                    b.HasOne("Entities.Models.User", "User")
-                        .WithMany("Directs")
-                        .HasForeignKey("UserId")
+                    b.HasOne("Entities.Models.User", "UserCreation")
+                        .WithMany()
+                        .HasForeignKey("UserCreationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Entities.Models.User", "UserReceiver")
+                        .WithMany()
+                        .HasForeignKey("UserReceiverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Post");
 
-                    b.Navigation("User");
+                    b.Navigation("UserCreation");
+
+                    b.Navigation("UserReceiver");
                 });
 
             modelBuilder.Entity("Entities.Models.DirectPhoto", b =>
@@ -934,13 +928,21 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Entities.Models.Follow", b =>
                 {
-                    b.HasOne("Entities.Models.User", "User")
-                        .WithMany("Follows")
-                        .HasForeignKey("UserId")
+                    b.HasOne("Entities.Models.User", "UserCreation")
+                        .WithMany()
+                        .HasForeignKey("UserCreationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.HasOne("Entities.Models.User", "UserFollow")
+                        .WithMany()
+                        .HasForeignKey("UserFollowId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("UserCreation");
+
+                    b.Navigation("UserFollow");
                 });
 
             modelBuilder.Entity("Entities.Models.Like", b =>
@@ -951,26 +953,26 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entities.Models.User", "User")
+                    b.HasOne("Entities.Models.User", "UserCreation")
                         .WithMany("Likes")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserCreationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Post");
 
-                    b.Navigation("User");
+                    b.Navigation("UserCreation");
                 });
 
             modelBuilder.Entity("Entities.Models.Post", b =>
                 {
-                    b.HasOne("Entities.Models.User", "User")
+                    b.HasOne("Entities.Models.User", "UserCreation")
                         .WithMany("Posts")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserCreationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("UserCreation");
                 });
 
             modelBuilder.Entity("Entities.Models.PostHashtag", b =>
@@ -1065,7 +1067,7 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Entities.Models.User", "User")
+                    b.HasOne("Entities.Models.User", "UserCreation")
                         .WithMany("UserPhotos")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1073,7 +1075,7 @@ namespace Data.Migrations
 
                     b.Navigation("Photo");
 
-                    b.Navigation("User");
+                    b.Navigation("UserCreation");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1180,10 +1182,6 @@ namespace Data.Migrations
             modelBuilder.Entity("Entities.Models.User", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Directs");
-
-                    b.Navigation("Follows");
 
                     b.Navigation("Likes");
 

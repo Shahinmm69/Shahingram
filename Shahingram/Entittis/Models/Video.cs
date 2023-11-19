@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Models
 {
-    public class Video : Craetion, IDeletion
+    public class Video : Creation, IDeletion
     {
         [Required]
         public string Address { get; set; }

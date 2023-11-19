@@ -23,8 +23,8 @@ namespace Data.Repositories
         }
         public virtual Task CraetionDateAsync(TEntity entity, CancellationToken cancellationToken)
         {
-            entity.CrationDate = DateTime.Now;
-            entity.UserCraetionId = Convert.ToInt32(signInManager.Context.Request.HttpContext.User.Identity.GetUserId());
+            entity.CreationDate = DateTime.Now;
+            entity.UserCreationId = Convert.ToInt32(signInManager.Context.Request.HttpContext.User.Identity.GetUserId());
             return AddAsync(entity, cancellationToken);
 
         }

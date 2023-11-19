@@ -2,6 +2,7 @@
 using Common.Exceptions;
 using Data.Contract;
 using Entities.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Services.Contract;
 
@@ -11,15 +12,18 @@ namespace Services.Services
     {
         protected readonly ICreationRepository<Follow> creationfollowrepository;
         protected readonly IRepository<Follow> followrepository;
-        public FollowServices(ICreationRepository<Follow> creationfollowrepository, IRepository<Follow> followrepository)
+        private readonly SignInManager<User> signInManager;
+        public FollowServices(ICreationRepository<Follow> creationfollowrepository, IRepository<Follow> followrepository, SignInManager<User> signInManager)
         {
             this.creationfollowrepository = creationfollowrepository;
             this.followrepository = followrepository;
+            this.signInManager = signInManager;
         }
 
         public async Task CraetionConfigAsync(Follow entity, CancellationToken cancellationToken)
         {
-            var follow = await followrepository.TableNoTracking.Where(x => x.UserId == entity.UserId && x.FollowId == entity.FollowId).ToListAsync();
+            var id = Convert.ToInt32(signInManager.Context.Request.HttpContext.User.Identity.GetUserId());
+            var follow = await followrepository.TableNoTracking.Where(x => x.UserCreationId == id && x.UserFollowId == entity.UserFollowId).ToListAsync();
 
             if (follow == null)
             {

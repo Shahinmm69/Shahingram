@@ -2,6 +2,7 @@
 using Common.Exceptions;
 using Data.Contract;
 using Entities.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Services.Contract;
 using System;
@@ -16,15 +17,18 @@ namespace Services.Services
     {
         protected readonly ICreationRepository<Like> creationlikerepository;
         protected readonly IRepository<Like> likerepository;
-        public LikeServices(ICreationRepository<Like> creationlikerepository, IRepository<Like> likerepository)
+        private readonly SignInManager<User> signInManager;
+        public LikeServices(ICreationRepository<Like> creationlikerepository, IRepository<Like> likerepository, SignInManager<User> signInManager)
         {
             this.creationlikerepository = creationlikerepository;
             this.likerepository = likerepository;
+            this.signInManager = signInManager;
         }
 
         public async Task CraetionConfigAsync(Like entity, CancellationToken cancellationToken)
         {
-            var like = await likerepository.TableNoTracking.Where(x => x.UserId == entity.UserId && x.PostId == entity.PostId).LastAsync();
+            var id = Convert.ToInt32(signInManager.Context.Request.HttpContext.User.Identity.GetUserId());
+            var like = await likerepository.TableNoTracking.Where(x => x.UserCreationId == id && x.PostId == entity.PostId).LastAsync();
 
             if (like == null || like.IsDeleted == true)
             {

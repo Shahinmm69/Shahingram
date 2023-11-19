@@ -61,7 +61,7 @@ namespace Services.Services
                     }
                     else
                     {
-                        var newhashtag = new Hashtag() { Title = hashtags[i], UserCraetionId = comment.UserCraetionId };
+                        var newhashtag = new Hashtag() { Title = hashtags[i], UserCreationId = comment.UserCreationId };
                         await creationhashtagrepository.CraetionDateAsync(newhashtag, cancellationToken);
                         var newcommenthashtag = new CommentHashtag() { CommentId = id, HashtagId = newhashtag.Id };
                         await commenthashtagrepository.AddAsync(newcommenthashtag, cancellationToken);

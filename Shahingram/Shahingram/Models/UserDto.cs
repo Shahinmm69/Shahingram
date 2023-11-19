@@ -33,9 +33,12 @@ namespace Shahingram.Models
         public string IsDeleted { get; set; }
         public string DeletionDate { get; set; }
         public string PhotoAddress { get; set; }
-        public int FollowersCount { get; set; }
-        public int FollowingsCount { get; set; }
+        public int? FollowersCount { get; set; }
+        public int? FollowingsCount { get; set; }
         public int PostsCount { get; set; }
         public List<int> PostsId { get; set; }
+        public string UserCraetionName { get; set; }
+        public string UserModificationName { get; set; }
+        public string UserDeletionName { get; set; }
     }
 }

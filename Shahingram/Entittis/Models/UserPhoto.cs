@@ -15,14 +15,14 @@ namespace Entities.Models
         public int UserId { get; set; }
         public int PhotoId { get; set; }
 
-        public virtual User User { get; set; } = null!;
+        public virtual User UserCreation { get; set; } = null!;
         public virtual Photo Photo { get; set; } = null!;
 
         public class UserPhotoConfiguration : IEntityTypeConfiguration<UserPhoto>
         {
             public void Configure(EntityTypeBuilder<UserPhoto> builder)
             {
-                builder.HasOne(p => p.User).WithMany(c => c.UserPhotos).HasForeignKey(p => p.UserId);
+                builder.HasOne(p => p.UserCreation).WithMany(c => c.UserPhotos).HasForeignKey(p => p.UserId);
                 builder.HasOne(p => p.Photo).WithMany(c => c.UserPhotos).HasForeignKey(p => p.PhotoId);
             }
         }

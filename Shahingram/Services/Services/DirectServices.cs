@@ -64,7 +64,7 @@ namespace Services.Services
             var direct = await directbaserepository.GetByIdAsync(cancellationToken, id);
             if (direct.DirectVideos == null && direct.Post == null)
             {
-                var newphoto = new Photo() { Address = address, UserCraetionId = userid, Describtion = await GetDescribtionAsync(id, cancellationToken) };
+                var newphoto = new Photo() { Address = address, UserCreationId = userid, Describtion = await GetDescribtionAsync(id, cancellationToken) };
                 await creationphotorepository.CraetionDateAsync(newphoto, cancellationToken);
                 var newdirectphoto = new DirectPhoto() { DirectId = id, PhotoId = newphoto.Id };
                 await directphotorepository.AddAsync(newdirectphoto, cancellationToken);
@@ -76,7 +76,7 @@ namespace Services.Services
             var direct = await directbaserepository.GetByIdAsync(cancellationToken, id);
             if (direct.DirectPhotos == null && direct.Post == null)
             {
-                var newvideo = new Video() { Address = address, UserCraetionId = userid, Describtion = await GetDescribtionAsync(id, cancellationToken) };
+                var newvideo = new Video() { Address = address, UserCreationId = userid, Describtion = await GetDescribtionAsync(id, cancellationToken) };
                 await creationvideorepository.CraetionDateAsync(newvideo, cancellationToken);
                 var newdirectvideo = new DirectVideo() { DirectId = id, VideoId = newvideo.Id };
                 await directvideorepository.AddAsync(newdirectvideo, cancellationToken);
@@ -172,7 +172,7 @@ namespace Services.Services
         public async Task ForwardAsync(int id, int userreceiverid, CancellationToken cancellationToken)
         {
             var direct = await directbaserepository.GetByIdAsync(cancellationToken, id);
-            direct.UserSenderId = direct.UserReceiverId;
+            direct.UserCreationId = direct.UserReceiverId;
             direct.UserReceiverId = userreceiverid;
             await creationdirectorepository.CraetionDateAsync(direct, cancellationToken);
         }
@@ -180,7 +180,7 @@ namespace Services.Services
         public async Task<string> GetDescribtionAsync(int id, CancellationToken cancellationToken)
         {
             var direct = await directbaserepository.GetByIdAsync(cancellationToken, id);
-            return $"UserId: {direct.UserCraetionId} - DirectId: {direct.Id}";
+            return $"UserId: {direct.UserCreationId} - DirectId: {direct.Id}";
         }
     }
 }
